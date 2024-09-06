@@ -21,7 +21,7 @@ class Client(QWidget):
         self.setWindowTitle("聊天室")
         # 添加背景
         palette = QtGui.QPalette()
-        bg = QtGui.QPixmap("./talk_background.jpg")
+        bg = QtGui.QPixmap("../../talk_background.jpg")
         palette.setBrush(self.backgroundRole(), QtGui.QBrush(bg))
         self.setPalette(palette)
         self.add_ui()
