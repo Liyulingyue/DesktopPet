@@ -2,13 +2,23 @@ import os
 import sys
 import random
 import time
+
+import yaml
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
-from .talk_show import Client
+from .chatbot import ChatBox
 # from transformers.dependency_versions_check import pkgs_to_check_at_runtime
 # print(pkgs_to_check_at_runtime)
 
+# config_dict = yaml.safe_load(
+#     open(
+#         os.path.join(os.getcwd(), 'Source/config.yaml')
+#     )
+# )
+config_dict = yaml.safe_load(
+    open('Source/config.yaml')
+)
 
 class DesktopPet(QWidget):
     def __init__(self, parent=None, **kwargs):
@@ -43,7 +53,7 @@ class DesktopPet(QWidget):
     # 托盘化设置初始化
     def initPall(self):
         # 导入准备在托盘化显示上使用的图标
-        icons = os.path.join('../../tigerIcon.jpg')
+        icons = config_dict['Icon']
         # 设置右键显示最小化的菜单项
         # 菜单项退出，点击后调用quit函数
         quit_action = QAction('退出', self, triggered=self.quit)
@@ -110,7 +120,7 @@ class DesktopPet(QWidget):
         # 将宠物正常待机状态的对话放入pet2中
         self.dialog = []
         # 读取目录下dialog文件
-        with open("./dialog.txt", "r") as f:
+        with open(config_dict["Dialog"], "r") as f:
             text = f.read()
             # 以\n 即换行符为分隔符，分割放进dialog中
             self.dialog = text.split("\n")
@@ -281,7 +291,7 @@ class DesktopPet(QWidget):
         menu = QMenu(self)
         # 定义菜单项
         hide = menu.addAction("隐藏")
-        question_answer = menu.addAction("故事大会")
+        question_answer = menu.addAction("文心一言")
         if self.rest_open == 1:
             rest_anhour = menu.addAction("打开休息提醒")
         elif self.rest_open == 2:
@@ -300,8 +310,8 @@ class DesktopPet(QWidget):
             self.setWindowOpacity(0)
         # 点击事件为故事大会
         if action == question_answer:
-            self.client = Client()
-            self.client.show()
+            self.chatbox = ChatBox()
+            self.chatbox.show()
 
         # 打开休息提醒
         if action == rest_anhour:

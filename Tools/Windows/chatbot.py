@@ -1,36 +1,60 @@
+import yaml
 from PyQt5 import QtGui
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import *
 from PyQt5 import QtWidgets
 import sys
 import socket
 from threading import Thread
+
+from ..LLM.ernie import ErnieClass
+
 # from transformers import BertTokenizer, GPT2LMHeadModel, TextGenerationPipeline
 # tokenizer = BertTokenizer.from_pretrained("./text_generator/")
 # model = GPT2LMHeadModel.from_pretrained("./text_generator/")
 # text_generator = TextGenerationPipeline(model, tokenizer)
 
-class Client(QWidget):
+config_dict = yaml.safe_load(
+    open('Source/config.yaml')
+)
+
+class ChatBox(QWidget):
     # 初始化界面
     def __init__(self, parent=None, **kwargs):
         # QWidget.__init__(self)
-        super(Client, self).__init__(parent)
-        # 设置窗口的大小和位置
-        self.setGeometry(600, 300, 600, 337)
-        # 设置标题
-        self.setWindowTitle("聊天室")
-        # 添加背景
-        palette = QtGui.QPalette()
-        bg = QtGui.QPixmap("../../talk_background.jpg")
-        palette.setBrush(self.backgroundRole(), QtGui.QBrush(bg))
-        self.setPalette(palette)
+        super(ChatBox, self).__init__(parent)
+
+        self.init()
+
         self.add_ui()
+
+        self.llm = ErnieClass(access_token=config_dict['ErnieToken'])
  
         # 启动线程
         self.work_thread()
 
         # # 展示
         # self.show()
+
+    def init(self):
+
+        # 设置窗口的大小和位置
+        self.setGeometry(600, 300, 600, 337)
+        # 设置标题
+        self.setWindowTitle("文心一言")
+
+        # self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.SubWindow)
+
+        # setAutoFillBackground(True)表示的是自动填充背景,False为透明背景
+        self.setAutoFillBackground(False)
+        # 窗口透明，窗体空间不透明
+        # self.setAttribute(Qt.WA_TranslucentBackground, True)
+        self.setAttribute(Qt.WA_TranslucentBackground, False)
+
+        # 重绘组件、刷新
+        self.repaint()
+
  
     # 设置界面当中的组件
     def add_ui(self):
@@ -47,19 +71,36 @@ class Client(QWidget):
         self.button = QPushButton("发送", self)
         self.button.setFont(QFont("微软雅黑", 10, QFont.Bold))
         self.button.setGeometry(520, 270, 60, 30)
+
+        # 关闭按钮
+        self.btn_close = QPushButton("关闭", self)
+        self.btn_close.setFont(QFont("微软雅黑", 10, QFont.Bold))
+        self.btn_close.setGeometry(420, 270, 60, 30)
+
+        self.btn_close.clicked.connect(self.closeEvent)
  
  
     # 发送消息 + 接收消息
     def send_msg(self):
+        selfname = config_dict['UserName']
+        agentname = config_dict['AgentName']
         msg = self.message.text()
-        self.content.append("My: " + msg)
-        if msg.upper() == "Q":
-            self.destroy()
+
+        self.content.append(f"{selfname}: {msg}")
+
         self.message.clear()
-        
-        # text_output = text_generator(str(msg), max_length=100, do_sample=True)
-        # self.content.append("Generator: " + text_output[0]['generated_text'])
-        print("请增加关于信息输出的逻辑")
+
+        msg = [
+            {'role': "user", 'content': f"我的身份是{selfname}，请你扮演{agentname},与我对话。如果你理解我的意图请回复 好的 。"},
+            {'role': "assistant", 'content': "好的"},
+            {'role': "user", 'content': msg}
+        ]
+
+        # text_output = self.llm.get_llm_answer(msg)
+        text_output = self.llm.get_llm_answer_with_msg(msg)
+
+
+        self.content.append(f"{agentname}: {text_output}")
 
     # 接收消息
     def recv_msg(self):
@@ -92,8 +133,8 @@ if __name__ == '__main__':
     # 所有的PyQt5应用必须创建一个应用（Application）对象。sys.argv参数是一个来自命令行的参数列表。
     app = QApplication(sys.argv)
     # 窗口组件初始化
-    client = Client()
-    client.show()
+    chatbox = ChatBox()
+    ChatBox.show()
     # 1. 进入时间循环；
     # 2. wait，直到响应app可能的输入；
     # 3. QT接收和处理用户及系统交代的事件（消息），并传递到各个窗口；

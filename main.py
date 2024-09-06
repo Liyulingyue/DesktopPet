@@ -2,7 +2,7 @@ import sys
 
 from PyQt5.QtWidgets import QApplication
 
-from Tools.windows.main import DesktopPet
+from Tools.Windows.main import DesktopPet
 
 
 if __name__ == '__main__':
