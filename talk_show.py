@@ -5,10 +5,10 @@ from PyQt5 import QtWidgets
 import sys
 import socket
 from threading import Thread
-from transformers import BertTokenizer, GPT2LMHeadModel, TextGenerationPipeline
-tokenizer = BertTokenizer.from_pretrained("./text_generator/")
-model = GPT2LMHeadModel.from_pretrained("./text_generator/")
-text_generator = TextGenerationPipeline(model, tokenizer)   
+# from transformers import BertTokenizer, GPT2LMHeadModel, TextGenerationPipeline
+# tokenizer = BertTokenizer.from_pretrained("./text_generator/")
+# model = GPT2LMHeadModel.from_pretrained("./text_generator/")
+# text_generator = TextGenerationPipeline(model, tokenizer)
 
 class Client(QWidget):
     # 初始化界面
@@ -57,8 +57,9 @@ class Client(QWidget):
             self.destroy()
         self.message.clear()
         
-        text_output = text_generator(str(msg), max_length=100, do_sample=True)
-        self.content.append("Generator: " + text_output[0]['generated_text'])
+        # text_output = text_generator(str(msg), max_length=100, do_sample=True)
+        # self.content.append("Generator: " + text_output[0]['generated_text'])
+        print("请增加关于信息输出的逻辑")
 
     # 接收消息
     def recv_msg(self):

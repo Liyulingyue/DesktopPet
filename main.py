@@ -6,8 +6,8 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from talk_show import Client
-from transformers.dependency_versions_check import pkgs_to_check_at_runtime
-print(pkgs_to_check_at_runtime)
+# from transformers.dependency_versions_check import pkgs_to_check_at_runtime
+# print(pkgs_to_check_at_runtime)
 
 
 class DesktopPet(QWidget):
@@ -230,8 +230,8 @@ class DesktopPet(QWidget):
         screen_geo = QDesktopWidget().screenGeometry()
         # 获取窗口坐标系
         pet_geo = self.geometry()
-        width = (screen_geo.width() - pet_geo.width()) * random.random()
-        height = (screen_geo.height() - pet_geo.height()) * random.random()
+        width = int((screen_geo.width() - pet_geo.width()) * random.random())
+        height = int((screen_geo.height() - pet_geo.height()) * random.random())
         self.move(width, height)
 
     # 鼠标左键按下时, 宠物将和鼠标位置绑定
