@@ -6,6 +6,7 @@ config_dict = yaml.safe_load(
     open('Source/config.yaml')
 )
 
+# 初始化托盘菜单，用于主窗口程序
 def initPallet(window):
     # 导入准备在托盘化显示上使用的图标
     icons = config_dict['Icon']
