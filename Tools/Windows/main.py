@@ -7,6 +7,8 @@ import yaml
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
+
+from .Pallet.main import initPallet
 from .chatbot import ChatBox
 # from transformers.dependency_versions_check import pkgs_to_check_at_runtime
 # print(pkgs_to_check_at_runtime)
@@ -26,7 +28,7 @@ class DesktopPet(QWidget):
         # 窗体初始化
         self.init()
         # 托盘化初始
-        self.initPall()
+        initPallet(self)
         # 宠物静态gif图加载
         self.initPetImage()
         # 宠物正常待机，实现随机切换动作
@@ -51,30 +53,30 @@ class DesktopPet(QWidget):
         self.repaint()
 
     # 托盘化设置初始化
-    def initPall(self):
-        # 导入准备在托盘化显示上使用的图标
-        icons = config_dict['Icon']
-        # 设置右键显示最小化的菜单项
-        # 菜单项退出，点击后调用quit函数
-        quit_action = QAction('退出', self, triggered=self.quit)
-        # 设置这个点击选项的图片
-        quit_action.setIcon(QIcon(icons))
-        # 菜单项显示，点击后调用showing函数
-        showing = QAction(u'显示', self, triggered=self.showwin)
-        # 新建一个菜单项控件
-        self.tray_icon_menu = QMenu(self)
-        # 在菜单栏添加一个无子菜单的菜单项‘退出’
-        self.tray_icon_menu.addAction(quit_action)
-        # 在菜单栏添加一个无子菜单的菜单项‘显示’
-        self.tray_icon_menu.addAction(showing)
-        # QSystemTrayIcon类为应用程序在系统托盘中提供一个图标
-        self.tray_icon = QSystemTrayIcon(self)
-        # 设置托盘化图标
-        self.tray_icon.setIcon(QIcon(icons))
-        # 设置托盘化菜单项
-        self.tray_icon.setContextMenu(self.tray_icon_menu)
-        # 展示
-        self.tray_icon.show()
+    # def initPall(self):
+    #     # 导入准备在托盘化显示上使用的图标
+    #     icons = config_dict['Icon']
+    #     # 设置右键显示最小化的菜单项
+    #     # 菜单项退出，点击后调用quit函数
+    #     quit_action = QAction('退出', self, triggered=self.quit)
+    #     # 设置这个点击选项的图片
+    #     quit_action.setIcon(QIcon(icons))
+    #     # 菜单项显示，点击后调用showing函数
+    #     showing = QAction(u'显示', self, triggered=self.showwin)
+    #     # 新建一个菜单项控件
+    #     self.tray_icon_menu = QMenu(self)
+    #     # 在菜单栏添加一个无子菜单的菜单项‘退出’
+    #     self.tray_icon_menu.addAction(quit_action)
+    #     # 在菜单栏添加一个无子菜单的菜单项‘显示’
+    #     self.tray_icon_menu.addAction(showing)
+    #     # QSystemTrayIcon类为应用程序在系统托盘中提供一个图标
+    #     self.tray_icon = QSystemTrayIcon(self)
+    #     # 设置托盘化图标
+    #     self.tray_icon.setIcon(QIcon(icons))
+    #     # 设置托盘化菜单项
+    #     self.tray_icon.setContextMenu(self.tray_icon_menu)
+    #     # 展示
+    #     self.tray_icon.show()
 
     # 宠物静态gif图加载
     def initPetImage(self):
