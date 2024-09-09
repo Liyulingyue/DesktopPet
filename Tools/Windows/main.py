@@ -8,8 +8,12 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from .Pallet.main import initPallet
+from .Timer.main import initTimer # 初始化定时器
+from .Var.main import initVar # 初始化变量
+from .UI.main import initUI # 初始化界面
+from .Pallet.main import initPallet # 初始化托盘参数
 from .chatbot import ChatBox
+
 # from transformers.dependency_versions_check import pkgs_to_check_at_runtime
 # print(pkgs_to_check_at_runtime)
 
@@ -25,118 +29,16 @@ config_dict = yaml.safe_load(
 class DesktopPet(QWidget):
     def __init__(self, parent=None, **kwargs):
         super(DesktopPet, self).__init__(parent)
-        # 窗体初始化
-        self.init()
 
+        initVar(self) # 初始化变量
+        initUI(self) # 初始化界面
         initPallet(self) # 托盘化初始
-
-        # 宠物静态gif图加载
-        self.initPetImage()
-        # 宠物正常待机，实现随机切换动作
-        self.petNormalAction()
-
-
-    # 窗体初始化
-    def init(self):
-        # 初始化
-        # 设置窗口属性:窗口无标题栏且固定在最前面
-        # FrameWindowHint:无边框窗口
-        # WindowStaysOnTopHint: 窗口总显示在最上面
-        # SubWindow: 新窗口部件是一个子窗口，而无论窗口部件是否有父窗口部件
-        # https://blog.csdn.net/kaida1234/article/details/79863146
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.SubWindow)
-        # setAutoFillBackground(True)表示的是自动填充背景,False为透明背景
-        self.setAutoFillBackground(False)
-        # 窗口透明，窗体空间不透明
-        self.setAttribute(Qt.WA_TranslucentBackground, True)
-
-        # 重绘组件、刷新
-        self.repaint()
-
-
-    # 宠物静态gif图加载
-    def initPetImage(self):
-        # 对话框定义
-        self.talkLabel = QLabel(self)
-        # 对话框样式设计
-        self.talkLabel.setStyleSheet("font:15pt '楷体';border-width: 1px;color:blue;")
-        # 定义显示图片部分
-        self.image = QLabel(self)
-        # QMovie是一个可以存放动态视频的类，一般是配合QLabel使用的,可以用来存放GIF动态图
-        self.movie = QMovie("pikaqiu/pikaqiu1.gif")
-        # 设置标签大小
-        self.movie.setScaledSize(QSize(200, 200))
-        # 将Qmovie在定义的image中显示
-        self.image.setMovie(self.movie)
-        self.movie.start()
-        self.resize(300, 300)
-
-        # "休息一下"时间显示
-        self.show_time_rest = QLabel(self)
-        # 对话框样式设计
-        self.show_time_rest.setStyleSheet("font:15pt '楷体';border-width: 1px;color:blue;")
-
-        # 调用自定义的randomPosition，会使得宠物出现位置随机
-        self.randomPosition()
-
-        # 布局设置
-        vbox = QVBoxLayout()
-        vbox.addWidget(self.talkLabel)
-        vbox.addWidget(self.image)
-        vbox.addWidget(self.show_time_rest)
-
-        #加载布局：前面设置好的垂直布局
-        self.setLayout(vbox)
-
-        # 展示
-        self.show()
-        # https://new.qq.com/rain/a/20211014a002rs00
-        # 将宠物正常待机状态的动图放入pet1中
-        self.pet1 = []
-        for i in os.listdir("./pikaqiu"):
-            self.pet1.append("pikaqiu/" + i)
-        # 将宠物正常待机状态的对话放入pet2中
-        self.dialog = []
-        # 读取目录下dialog文件
-        with open(config_dict["Dialog"], "r") as f:
-            text = f.read()
-            # 以\n 即换行符为分隔符，分割放进dialog中
-            self.dialog = text.split("\n")
-
-    # 宠物正常待机动作
-    def petNormalAction(self):
-        # 每隔一段时间做个动作
-        # 定时器设置
-        self.timer = QTimer()
-        # 时间到了自动执行
-        self.timer.timeout.connect(self.randomAct)
-        # 动作时间切换设置
-        self.timer.start(5000)
-        # 宠物状态设置为正常
-        self.condition = 0
-        # 每隔一段时间切换对话
-        self.talkTimer = QTimer()
-        self.talkTimer.timeout.connect(self.talk)
-        self.talkTimer.start(5000)
-        # 对话状态设置为常态
-        self.talk_condition = 0
-        # 宠物对话框
-        self.talk()
-
-        # 休息一下
-        self.timer_rest = QTimer()
-        self.timer_rest.timeout.connect(self.haveRest)
-        # self.timer_rest.start(10000)
-        # self.timer_rest_movie = QTimer()
-        # self.timer_rest_movie.timeout.connect(self.haveRestMovie)
-        # self.timer_rest_movie.start(10000)     
-        # 
-        self.rest_open = 1   
+        initTimer(self) # 初始化定时器
 
     # 随机动作切换
     def randomAct(self):
         # condition记录宠物状态，宠物状态为0时，代表正常待机
-        if not self.condition:
+        if self.petstate == "Normal":
             # 随机选择装载在pet1里面的gif图进行展示，实现随机切换
             self.movie = QMovie(random.choice(self.pet1))
             # 宠物大小
@@ -147,7 +49,7 @@ class DesktopPet(QWidget):
             self.movie.start()
         # condition不为0，转为切换特有的动作，实现宠物的点击反馈
         # 这里可以通过else-if语句往下拓展做更多的交互功能
-        elif self.condition == 1:
+        elif self.petstate == "Hang":
             # 读取特殊状态图片路径
             self.movie = QMovie("./click/click.gif")
             # 宠物大小
@@ -157,9 +59,9 @@ class DesktopPet(QWidget):
             # 开始播放动画
             self.movie.start()
             # 宠物状态设置为正常待机
-            self.condition = 0
-            self.talk_condition = 0
-        elif self.condition == 2:
+            self.petstate = "Normal"
+            self.talkstate = "Normal"
+        elif self.petstate == "Rest":
             # 把表情设定为固定的动作
             self.movie = QMovie("./click/20220614223056.gif")
             # 宠物大小
@@ -169,12 +71,12 @@ class DesktopPet(QWidget):
             # 开始播放动画
             self.movie.start()
             # # 宠物状态设置为正常待机
-            # self.condition = 0
+            # self.petstate = "Normal"
             
 
     # 宠物对话框行为处理
     def talk(self):
-        if not self.talk_condition:
+        if self.talkstate == "Normal":
             # talk_condition为0则选取加载在dialog中的语句
             self.talkLabel.setText(random.choice(self.dialog))
             # 设置样式
@@ -200,7 +102,7 @@ class DesktopPet(QWidget):
             self.talkLabel.adjustSize()
             # self.talkLabel.
             # 设置为正常状态
-            self.talk_condition = 0
+            self.talkstate = "Normal"
 
     # 退出操作，关闭程序
     def quit(self):
@@ -220,9 +122,9 @@ class DesktopPet(QWidget):
     # 鼠标左键按下时, 宠物将和鼠标位置绑定
     def mousePressEvent(self, event):
         # 更改宠物状态为点击
-        self.condition = 1
+        self.petstate = "Hang"
         # 更改宠物对话状态
-        self.talk_condition = 1
+        self.talkstate = "Hang"
         # 即可调用对话状态改变
         self.talk()
         # 即刻加载宠物点击动画
@@ -265,9 +167,9 @@ class DesktopPet(QWidget):
         # 定义菜单项
         hide = menu.addAction("隐藏")
         question_answer = menu.addAction("文心一言")
-        if self.rest_open == 1:
+        if self.reststate == "Normal":
             rest_anhour = menu.addAction("打开休息提醒")
-        elif self.rest_open == 2:
+        elif self.reststate == "Rest":
             rest_anhour = menu.addAction("关闭休息提醒")
         menu.addSeparator()
         quitAction = menu.addAction("退出")
@@ -288,12 +190,12 @@ class DesktopPet(QWidget):
 
         # 打开休息提醒
         if action == rest_anhour:
-            if self.rest_open == 1:
+            if self.reststate == "Normal":
                 self.timer_rest.start(3600000)
-                self.rest_open = 2
-            elif self.rest_open == 2:
+                self.reststate = "Rest"
+            elif self.reststate == "Rest":
                 self.timer_rest.stop()
-                self.rest_open = 1
+                self.reststate = "Normal"
 
     # 休息时间
     def haveRest(self):
@@ -307,7 +209,7 @@ class DesktopPet(QWidget):
             )
         
         # 固定休息图标
-        self.condition = 2
+        self.petstate = "Rest"
         self.randomAct()
         # screenGeometry（）函数提供有关可用屏幕几何的信息
         screen_geo = QDesktopWidget().screenGeometry()
