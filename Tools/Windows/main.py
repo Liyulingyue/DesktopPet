@@ -159,7 +159,7 @@ class DesktopPet(QWidget):
         # 定义菜单项
         actions = {
             "hide": QAction('隐藏', self, triggered=lambda: self.setWindowOpacity(0)),
-            "ernie": QAction('文心一眼', self, triggered=lambda: self.chatbox.show()),
+            "ernie": QAction('文心一言', self, triggered=lambda: self.chatbox.show()),
         }
         for key, value in actions.items():
             menu.addAction(value)

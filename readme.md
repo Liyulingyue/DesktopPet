@@ -8,6 +8,10 @@
 
 如果你需要使用文心一眼，请前往星河社区获取你的accesstoken，具体方法百度就行~
 
+## 打包方式
+1. `pip install pyinstaller`
+2. `pyinstaller -F -w main.py`
+3. 将Source文件夹复制到dist目录中
 
 # 定制你的宠物桌面
 > 来源于原项目，可能当前不是特别适用
