@@ -1,8 +1,10 @@
 Icon: Source/Image/tigerIcon.jpg
 Dialog: Source/Text/dialog.txt
-ErnieToken: 88ea362d6879c26099c527ebcf7fa601817ca10b
+ErnieToken: 1111111111111111111111111111
 UserName: Master
 AgentName: Pikachu
+ImageChangeTime: 300000 # 300000ms = 5min
+TalkChangeTime: 60000 # 60000ms = 1min
 Image_size:
   - 200 # width
   - 200 # height
