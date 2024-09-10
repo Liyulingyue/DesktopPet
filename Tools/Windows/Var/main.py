@@ -43,3 +43,5 @@ def initVar(window):
     Rest: 休息
     '''
     window.reststate = "Normal" # 宠物休息状态
+
+    window.is_follow_mouse = False # 是否跟随鼠标

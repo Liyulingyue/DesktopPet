@@ -35,43 +35,37 @@ class DesktopPet(QWidget):
         initPallet(self) # 托盘化初始
         initTimer(self) # 初始化定时器
 
+    def setMovie(self, movie_path):
+        """
+        设置动画并添加到标签中
+        Args:
+            movie_path (str): 动画文件路径(gif格式)
+        """
+        self.movie = QMovie(movie_path) # 读取图片路径
+        self.movie.setScaledSize(QSize(200, 200)) # 宠物大小
+        self.image.setMovie(self.movie) # 将动画添加到label中
+        self.movie.start() # 开始播放动画
+
+
     # 随机动作切换
-    def randomAct(self):
+    def refreshMovie(self):
         # condition记录宠物状态，宠物状态为0时，代表正常待机
         if self.petstate == "Normal":
-            # 随机选择装载在pet1里面的gif图进行展示，实现随机切换
-            self.movie = QMovie(random.choice(self.pet1))
-            # 宠物大小
-            self.movie.setScaledSize(QSize(200, 200))
-            # 将动画添加到label中
-            self.image.setMovie(self.movie)
-            # 开始播放动画
-            self.movie.start()
-        # condition不为0，转为切换特有的动作，实现宠物的点击反馈
-        # 这里可以通过else-if语句往下拓展做更多的交互功能
+            movie_path = random.choice(self.pet1) # 随机选择装载在pet1里面的gif图进行展示，实现随机切换
+            # condition不为0，转为切换特有的动作，实现宠物的点击反馈
+            # 这里可以通过else-if语句往下拓展做更多的交互功能
         elif self.petstate == "Hang":
             # 读取特殊状态图片路径
-            self.movie = QMovie("./click/click.gif")
-            # 宠物大小
-            self.movie.setScaledSize(QSize(200, 200))
-            # 将动画添加到label中
-            self.image.setMovie(self.movie)
-            # 开始播放动画
-            self.movie.start()
+            movie_path = "./click/click.gif"
             # 宠物状态设置为正常待机
             self.petstate = "Normal"
             self.talkstate = "Normal"
         elif self.petstate == "Rest":
-            # 把表情设定为固定的动作
-            self.movie = QMovie("./click/20220614223056.gif")
-            # 宠物大小
-            self.movie.setScaledSize(QSize(200, 200))
-            # 将动画添加到label中
-            self.image.setMovie(self.movie)
-            # 开始播放动画
-            self.movie.start()
-            # # 宠物状态设置为正常待机
+            movie_path = "./click/20220614223056.gif" # 把表情设定为固定的动作
+            # 宠物状态设置为正常待机
             # self.petstate = "Normal"
+
+        self.setMovie(movie_path)
             
 
     # 宠物对话框行为处理
@@ -113,24 +107,23 @@ class DesktopPet(QWidget):
     def randomPosition(self):
         # screenGeometry（）函数提供有关可用屏幕几何的信息
         screen_geo = QDesktopWidget().screenGeometry()
-        # 获取窗口坐标系
-        pet_geo = self.geometry()
+
+        pet_geo = self.geometry() # 获取窗口坐标系
         width = int((screen_geo.width() - pet_geo.width()) * random.random())
         height = int((screen_geo.height() - pet_geo.height()) * random.random())
         self.move(width, height)
 
     # 鼠标左键按下时, 宠物将和鼠标位置绑定
     def mousePressEvent(self, event):
-        # 更改宠物状态为点击
-        self.petstate = "Hang"
-        # 更改宠物对话状态
-        self.talkstate = "Hang"
-        # 即可调用对话状态改变
-        self.talk()
-        # 即刻加载宠物点击动画
-        self.randomAct()
+        self.petstate = "Hang"  # 更改宠物状态为点击
+        self.talkstate = "Hang"  # 更改宠物对话状态
+
+        self.talk() # 即可调用对话状态改变
+        self.refreshMovie() # 即刻加载宠物点击动画
+
         if event.button() == Qt.LeftButton:
             self.is_follow_mouse = True
+
         # globalPos() 事件触发点相对于桌面的位置
         # pos() 程序相对于桌面左上角的位置，实际是窗口的左上角坐标
         self.mouse_drag_pos = event.globalPos() - self.pos()
@@ -210,7 +203,7 @@ class DesktopPet(QWidget):
         
         # 固定休息图标
         self.petstate = "Rest"
-        self.randomAct()
+        self.refreshMovie()
         # screenGeometry（）函数提供有关可用屏幕几何的信息
         screen_geo = QDesktopWidget().screenGeometry()
         # 获取窗口坐标系
