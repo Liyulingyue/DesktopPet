@@ -35,6 +35,10 @@ class DesktopPet(QWidget):
         initPallet(self) # 托盘化初始
         initTimer(self) # 初始化定时器
 
+        self.refreshMovie() # 初始化宠物动作
+        self.refreshTalk() # 初始化对话
+
+
     def setMovie(self, movie_path):
         """
         设置动画并添加到标签中
@@ -42,61 +46,51 @@ class DesktopPet(QWidget):
             movie_path (str): 动画文件路径(gif格式)
         """
         self.movie = QMovie(movie_path) # 读取图片路径
-        self.movie.setScaledSize(QSize(200, 200)) # 宠物大小
+        self.movie.setScaledSize(QSize(config_dict["Image_size"][0], config_dict["Image_size"][1])) # 宠物大小
         self.image.setMovie(self.movie) # 将动画添加到label中
         self.movie.start() # 开始播放动画
 
 
     # 随机动作切换
     def refreshMovie(self):
-        # condition记录宠物状态，宠物状态为0时，代表正常待机
+        """
+        刷新宠物动画。
+        """
         if self.petstate == "Normal":
-            movie_path = random.choice(self.pet1) # 随机选择装载在pet1里面的gif图进行展示，实现随机切换
-            # condition不为0，转为切换特有的动作，实现宠物的点击反馈
-            # 这里可以通过else-if语句往下拓展做更多的交互功能
+            movie_path = random.choice(config_dict["Images"]["Normal"]) # 随机选择通用动作
         elif self.petstate == "Hang":
-            # 读取特殊状态图片路径
-            movie_path = "./click/click.gif"
-            # 宠物状态设置为正常待机
-            self.petstate = "Normal"
-            self.talkstate = "Normal"
-        elif self.petstate == "Rest":
-            movie_path = "./click/20220614223056.gif" # 把表情设定为固定的动作
-            # 宠物状态设置为正常待机
-            # self.petstate = "Normal"
+            movie_path = config_dict["Images"]["Hang"]
+        else:
+            movie_path = random.choice(config_dict["Images"]["Normal"])
 
         self.setMovie(movie_path)
             
 
+    def setTalk(self, text):
+        """
+        设置对话内容。
+        Args:
+            text (str): 文本内容
+        """
+        self.talkLabel.setText(text)
+        self.talkLabel.setStyleSheet(
+            "font: bold;"
+            "font:15pt '楷体';"
+            "color:white;"
+            "background-color: white"
+            "url(:/)"
+        )
+        self.talkLabel.adjustSize()
+
     # 宠物对话框行为处理
-    def talk(self):
+    def refreshTalk(self):
         if self.talkstate == "Normal":
-            # talk_condition为0则选取加载在dialog中的语句
-            self.talkLabel.setText(random.choice(self.dialog))
-            # 设置样式
-            self.talkLabel.setStyleSheet(
-                "font: bold;"
-                "font:15pt '楷体';"
-                "color:white;"
-                "background-color: white"
-                "url(:/)"
-            )
-            # 根据内容自适应大小
-            self.talkLabel.adjustSize()
-        else:
-            # talk_condition为1显示为别点我，这里同样可以通过if-else-if来拓展对应的行为
-            self.talkLabel.setText("咬你哦！")
-            self.talkLabel.setStyleSheet(
-                "font: bold;"
-                "font:15pt '楷体';"
-                "color:white;"
-                "background-color: white"
-                "url(:/)"
-            )
-            self.talkLabel.adjustSize()
-            # self.talkLabel.
-            # 设置为正常状态
-            self.talkstate = "Normal"
+            text = random.choice(self.dialog) # 随机选择对话内容
+        else: # Hang
+            text = "咬你哦！"
+            self.talkstate = "Normal" # 设置为正常状态
+
+        self.setTalk(text) # 设置对话内容
 
     # 退出操作，关闭程序
     def quit(self):
@@ -115,38 +109,42 @@ class DesktopPet(QWidget):
 
     # 鼠标左键按下时, 宠物将和鼠标位置绑定
     def mousePressEvent(self, event):
-        self.petstate = "Hang"  # 更改宠物状态为点击
-        self.talkstate = "Hang"  # 更改宠物对话状态
-
-        self.talk() # 即可调用对话状态改变
-        self.refreshMovie() # 即刻加载宠物点击动画
-
+        # 判断是否为鼠标左键
         if event.button() == Qt.LeftButton:
-            self.is_follow_mouse = True
+            # 宠物点击状态为点击
+            self.petstate = "Hang"  # 更改宠物状态为点击
+            self.talkstate = "Hang"  # 更改宠物对话状态
+            self.is_follow_mouse = True # 设置为绑定状态
+            # 获取窗口的位置
+            #   globalPos() 事件触发点相对于桌面的位置
+            #   pos() 程序相对于窗口父控件（可能是屏幕）的左上角坐标
+            self.mouse_drag_pos = event.globalPos() - self.pos()
 
-        # globalPos() 事件触发点相对于桌面的位置
-        # pos() 程序相对于桌面左上角的位置，实际是窗口的左上角坐标
-        self.mouse_drag_pos = event.globalPos() - self.pos()
-        event.accept()
-        # 拖动时鼠标图形的设置
-        self.setCursor(QCursor(Qt.OpenHandCursor))
 
-        # 取消休息状态
-        self.show_time_rest.setText("")
+            self.refreshTalk() # 刷新对话
+            self.refreshMovie() # 刷新动画
+            self.setCursor(QCursor(Qt.OpenHandCursor)) # 拖动时鼠标图形的设置
+
+            event.accept()
 
     # 鼠标移动时调用，实现宠物随鼠标移动
     def mouseMoveEvent(self, event):
         # 如果鼠标左键按下，且处于绑定状态
-        if Qt.LeftButton and self.is_follow_mouse:
+        if (event.buttons() & Qt.LeftButton) and self.is_follow_mouse:
             # 宠物随鼠标进行移动
             self.move(event.globalPos() - self.mouse_drag_pos)
         event.accept()
 
     # 鼠标释放调用，取消绑定
     def mouseReleaseEvent(self, event):
-        self.is_follow_mouse = False
-        # 鼠标图形设置为箭头
-        self.setCursor(QCursor(Qt.ArrowCursor))
+        if event.button() == Qt.LeftButton:
+            self.petstate = "Normal"  # 更改宠物状态为点击
+            self.talkstate = "Normal"  # 更改宠物对话状态
+            self.is_follow_mouse = False
+
+            self.setCursor(QCursor(Qt.ArrowCursor)) # 鼠标图形设置为箭头
+            self.refreshMovie()  # 刷新动画
+            self.refreshTalk() # 刷新对话
 
     # 鼠标移进时调用
     def enterEvent(self, event):
@@ -157,60 +155,29 @@ class DesktopPet(QWidget):
     def contextMenuEvent(self, event):
         # 定义菜单
         menu = QMenu(self)
+
         # 定义菜单项
-        hide = menu.addAction("隐藏")
-        question_answer = menu.addAction("文心一言")
-        if self.reststate == "Normal":
-            rest_anhour = menu.addAction("打开休息提醒")
-        elif self.reststate == "Rest":
-            rest_anhour = menu.addAction("关闭休息提醒")
+        actions = {
+            "hide": QAction('隐藏', self, triggered=lambda: self.setWindowOpacity(0)),
+            "ernie": QAction('文心一眼', self, triggered=lambda: self.chatbox.show()),
+        }
+        for key, value in actions.items():
+            menu.addAction(value)
+
+        # 添加分割线
         menu.addSeparator()
-        quitAction = menu.addAction("退出")
 
-        # 使用exec_()方法显示菜单。从鼠标右键事件对象中获得当前坐标。mapToGlobal()方法把当前组件的相对坐标转换为窗口（window）的绝对坐标。
+        # 添加退出菜单
+        ActionQuit = QAction('退出', self, triggered=qApp.quit)
+        menu.addAction(ActionQuit)
+
+        # 弹出菜单
+        # menu.exec_()方法用于显示一个弹出菜单（通常是一个QMenu实例），并等待用户选择一个动作
+        # 该方法会阻塞当前的事件循环，直到用户选择了菜单中的一个项或关闭了菜单
         action = menu.exec_(self.mapToGlobal(event.pos()))
-        # 点击事件为退出
-        if action == quitAction:
-            qApp.quit()
-        # 点击事件为隐藏
-        if action == hide:
-            # 通过设置透明度方式隐藏宠物
-            self.setWindowOpacity(0)
-        # 点击事件为故事大会
-        if action == question_answer:
-            self.chatbox = ChatBox()
-            self.chatbox.show()
+        # if action == ActionQuit:
+        #     print("退出")
 
-        # 打开休息提醒
-        if action == rest_anhour:
-            if self.reststate == "Normal":
-                self.timer_rest.start(3600000)
-                self.reststate = "Rest"
-            elif self.reststate == "Rest":
-                self.timer_rest.stop()
-                self.reststate = "Normal"
-
-    # 休息时间
-    def haveRest(self):
-        self.show_time_rest.setText("休息一下")
-        self.show_time_rest.setStyleSheet(
-                "font: bold;"
-                "font:25pt '楷体';"
-                "color:white;"
-                "background-color: white"
-                "url(:/)"
-            )
-        
-        # 固定休息图标
-        self.petstate = "Rest"
-        self.refreshMovie()
-        # screenGeometry（）函数提供有关可用屏幕几何的信息
-        screen_geo = QDesktopWidget().screenGeometry()
-        # 获取窗口坐标系
-        pet_geo = self.geometry()
-        width = (screen_geo.width() - pet_geo.width())
-        height = (screen_geo.height() - pet_geo.height())
-        self.move(width / 2, height / 2)
     
 
 if __name__ == '__main__':

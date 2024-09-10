@@ -97,20 +97,20 @@ text_generator = TextGenerationPipeline(model, tokenizer)
 
 ● 每隔一段时间会变化动图和文字：
 
-![图 11](./images/随机展示.gif)  
+![图 11](images/随机展示.gif)  
 
 
 ● 点击宠物时有额外动作
 
-![图 12](./images/点击.gif)  
+![图 12](images/点击.gif)  
 
 ● “故事大会”功能：跟宠物聊天，进行文本生成
 
-![图 13](./images/故事大会.gif)  
+![图 13](images/故事大会.gif)  
 
 ● “休息一下”功能：隔一个小时提醒你休息功能
 
-![图 13](./images/休息.gif)  
+![图 13](images/休息.gif)  
 
 这是目前项目的所有功能拉，有兴趣的可以下载原代码进行订制属于你的桌面宠物。
 

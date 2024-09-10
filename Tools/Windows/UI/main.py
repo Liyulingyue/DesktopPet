@@ -31,12 +31,11 @@ def initLayout(window):
     window.talkLabel.setStyleSheet("font:15pt '楷体';border-width: 1px;color:blue;") # 对话框样式设计
 
     window.image = QLabel(window) # 定义显示图片部分
-    window.movie = QMovie("pikaqiu/pikaqiu1.gif") # QMovie是一个可以存放动态视频的类，一般是配合QLabel使用的,可以用来存放GIF动态图
-    window.movie.setScaledSize(QSize(200, 200)) # 设置标签大小
-    window.image.setMovie(window.movie) # 将Qmovie在定义的image中显示
-    window.movie.start()
+    window.movie = QMovie() # QMovie是一个可以存放动态视频的类，一般是配合QLabel使用的,可以用来存放GIF动态图
+    # window.movie.setScaledSize(QSize(200, 200)) # 设置标签大小
+    # window.image.setMovie(window.movie) # 将Qmovie在定义的image中显示
+    # window.movie.start()
     # window.resize(300, 300)
-
 
     window.show_time_rest = QLabel(window) # "休息一下"时间显示
     window.show_time_rest.setStyleSheet("font:15pt '楷体';border-width: 1px;color:blue;") # 对话框样式设计

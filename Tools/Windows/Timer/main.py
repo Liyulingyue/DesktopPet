@@ -15,13 +15,5 @@ def initTimer(window):
 
     # 每隔一段时间切换对话
     window.talkTimer = QTimer()
-    window.talkTimer.timeout.connect(window.talk)
+    window.talkTimer.timeout.connect(window.refreshTalk)
     window.talkTimer.start(5000)
-
-    # 休息一下
-    window.timer_rest = QTimer()
-    window.timer_rest.timeout.connect(window.haveRest)
-    # window.timer_rest.start(10000)
-    # window.timer_rest_movie = QTimer()
-    # window.timer_rest_movie.timeout.connect(window.haveRestMovie)
-    # window.timer_rest_movie.start(10000)
