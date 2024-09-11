@@ -1,3 +1,11 @@
 pyqt5
 pyyaml
 erniebot
+nncf==2.8.1
+optimum-intel>=1.16.0
+transformers>=4.37.2
+openvino>=2024.0.0
+onnx==1.16.1
+huggingface-hub>=0.21.3
+gradio
+pyqt5

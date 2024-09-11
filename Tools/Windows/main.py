@@ -4,6 +4,7 @@ import random
 import time
 
 import yaml
+from PyQt5 import QtGui
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -33,64 +34,15 @@ class DesktopPet(QWidget):
         initVar(self) # 初始化变量
         initUI(self) # 初始化界面
         initPallet(self) # 托盘化初始
-        initTimer(self) # 初始化定时器
-
-        self.refreshMovie() # 初始化宠物动作
-        self.refreshTalk() # 初始化对话
 
 
-    def setMovie(self, movie_path):
-        """
-        设置动画并添加到标签中
-        Args:
-            movie_path (str): 动画文件路径(gif格式)
-        """
-        self.movie = QMovie(movie_path) # 读取图片路径
-        self.movie.setScaledSize(QSize(config_dict["Image_size"][0], config_dict["Image_size"][1])) # 宠物大小
-        self.image.setMovie(self.movie) # 将动画添加到label中
-        self.movie.start() # 开始播放动画
-
-
-    # 随机动作切换
-    def refreshMovie(self):
-        """
-        刷新宠物动画。
-        """
-        if self.petstate == "Normal":
-            movie_path = random.choice(config_dict["Images"]["Normal"]) # 随机选择通用动作
-        elif self.petstate == "Hang":
-            movie_path = config_dict["Images"]["Hang"]
-        else:
-            movie_path = random.choice(config_dict["Images"]["Normal"])
-
-        self.setMovie(movie_path)
-            
-
-    def setTalk(self, text):
-        """
-        设置对话内容。
-        Args:
-            text (str): 文本内容
-        """
-        self.talkLabel.setText(text)
-        self.talkLabel.setStyleSheet(
-            "font: bold;"
-            "font:15pt '楷体';"
-            "color:white;"
-            "background-color: white"
-            "url(:/)"
-        )
-        self.talkLabel.adjustSize()
-
-    # 宠物对话框行为处理
-    def refreshTalk(self):
-        if self.talkstate == "Normal":
-            text = random.choice(self.dialog) # 随机选择对话内容
-        else: # Hang
-            text = "咬你哦！"
-            self.talkstate = "Normal" # 设置为正常状态
-
-        self.setTalk(text) # 设置对话内容
+    def paintEvent(self, event):
+        # 绘制半透明白色背景
+        painter = QtGui.QPainter(self)
+        painter.setRenderHint(QtGui.QPainter.Antialiasing)
+        color = QtGui.QColor(255, 255, 255, 160)  # 白色: 255, 255, 255，透明度：50% 透明度 (255 * 0.5 = 128)
+        painter.fillRect(self.rect(), color)
+        painter.end()
 
     # 退出操作，关闭程序
     def quit(self):
@@ -120,9 +72,6 @@ class DesktopPet(QWidget):
             #   pos() 程序相对于窗口父控件（可能是屏幕）的左上角坐标
             self.mouse_drag_pos = event.globalPos() - self.pos()
 
-
-            self.refreshTalk() # 刷新对话
-            self.refreshMovie() # 刷新动画
             self.setCursor(QCursor(Qt.OpenHandCursor)) # 拖动时鼠标图形的设置
 
             event.accept()
@@ -143,13 +92,6 @@ class DesktopPet(QWidget):
             self.is_follow_mouse = False
 
             self.setCursor(QCursor(Qt.ArrowCursor)) # 鼠标图形设置为箭头
-            self.refreshMovie()  # 刷新动画
-            self.refreshTalk() # 刷新对话
-
-    # 鼠标移进时调用
-    def enterEvent(self, event):
-        # 设置鼠标形状 Qt.ClosedHandCursor   非指向手
-        self.setCursor(Qt.ClosedHandCursor)
 
     # 宠物右键点击交互
     def contextMenuEvent(self, event):
@@ -160,6 +102,7 @@ class DesktopPet(QWidget):
         actions = {
             "hide": QAction('隐藏', self, triggered=lambda: self.setWindowOpacity(0)),
             "ernie": QAction('文心一言', self, triggered=lambda: self.chatbox.show()),
+            "control": QAction('打开/关闭控制板', self, triggered=lambda: self.controlBoxWidget.setVisible(not self.controlBoxWidget.isVisible()))
         }
         for key, value in actions.items():
             menu.addAction(value)

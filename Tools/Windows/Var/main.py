@@ -10,19 +10,14 @@ config_dict = yaml.safe_load(
 
 
 def initVar(window):
-    # 配置对话信息
-    window.dialog = []
-    with open(config_dict["Dialog"], "r") as f: # 读取目录下dialog文件
-        text = f.read()
-        # 以\n 即换行符为分隔符，分割放进dialog中
-        window.dialog = text.split("\n")
-
     '''
     宠物状态应当为：
     Normal: 正常待机
     Hang: 鼠标长按拖拽
     Rest: 休息
     '''
+    window.HideInputFlag = False
+
     window.petstate = "Normal" # 宠物状态
 
     '''
