@@ -2,3 +2,4 @@ main.spec
 venv
 build
 dist
+Source/chatglm3-6b-ov
