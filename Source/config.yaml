@@ -1,2 +1,6 @@
 Icon: Source/Image/Icon.png
 TodoFile: Source/Text/Todo.txt
+LLM: glm3 # ernie, glm3, WITHOUT
+ErnieToken: dfasfasfasdfsadfsadfsadfdfsad
+GLM3Directory: Source/Model/chatglm3-6b-ov
+TodoUIUpdateTime: 100

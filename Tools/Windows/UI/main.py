@@ -37,10 +37,10 @@ def initLayout(window):
     window.ContorlButton = QPushButton("打开/折叠")
     window.TextInput = QLineEdit()
 
-    btn_add = QPushButton("添加") # 根据prompt，在todolist末尾添加工作项
-    btn_adjust = QPushButton("调整") # 根据prompt，调整工作项
-    btn_format = QPushButton("对齐格式") # 对齐工作项的文本格式
-    btn_simple = QPushButton("极速化") # 移除最上面一个工作项
+    window.btn_add = QPushButton("添加") # 根据prompt，在todolist末尾添加工作项
+    window.btn_adjust = QPushButton("调整") # 根据prompt，调整工作项
+    window.btn_format = QPushButton("对齐格式") # 对齐工作项的文本格式
+    window.btn_simple = QPushButton("移除一条") # 移除最上面一个工作项
 
 
     window.randomPosition() # 调用自定义的randomPosition，会使得宠物出现位置随机
@@ -61,8 +61,8 @@ def initLayout(window):
     ctrl_vbox.addWidget(QLabel(" ▽ Buttons"))
 
     ctrl_hbox = QHBoxLayout()
-    ctrl_hbox.addWidget(btn_add)
-    ctrl_hbox.addWidget(btn_adjust)
+    ctrl_hbox.addWidget(window.btn_add)
+    ctrl_hbox.addWidget(window.btn_adjust)
     ctrl_vbox.addLayout(ctrl_hbox)
 
     # line = QFrame()
@@ -71,8 +71,8 @@ def initLayout(window):
     # ctrl_vbox.addWidget(line)
 
     ctrl_hbox = QHBoxLayout()
-    ctrl_hbox.addWidget(btn_format)
-    ctrl_hbox.addWidget(btn_simple)
+    ctrl_hbox.addWidget(window.btn_format)
+    ctrl_hbox.addWidget(window.btn_simple)
     ctrl_vbox.addLayout(ctrl_hbox)
 
     window.controlBoxWidget.setVisible(False) # 隐藏控制板

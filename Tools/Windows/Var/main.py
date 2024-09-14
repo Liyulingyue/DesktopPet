@@ -37,3 +37,15 @@ def initVar(window):
     window.is_follow_mouse = False # 是否跟随鼠标
     window.mouse_drag_pos = None # 拖拽事件的辅助变量
     window.chatbox = ChatBox() # 初始化聊天框
+
+    if config_dict["LLM"] == "ernie":
+        from ...LLM.ernie import ErnieClass
+        window.llm = ErnieClass(config_dict.get("ErnieToken", ""))
+    elif config_dict["LLM"] == "glm3":
+        from ...LLM.glm3 import GLM3Class
+        window.llm = GLM3Class(config_dict.get("GLM3Directory", ""))
+    else:
+        window.llm = None
+
+    window.TodoUpdateFlag = False
+    window.TodoUpdateContent = ""

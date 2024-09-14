@@ -9,6 +9,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
+from .Method.main import initLLMMethods
 from .Timer.main import initTimer # 初始化定时器
 from .Var.main import initVar # 初始化变量
 from .UI.main import initUI # 初始化界面
@@ -32,14 +33,23 @@ class DesktopPet(QWidget):
         super(DesktopPet, self).__init__(parent)
 
         initVar(self) # 初始化变量
+        initTimer(self) # 初始化定时器
         initUI(self) # 初始化界面
         initPallet(self) # 托盘化初始
 
+        # 从配置中读取待办事项列表
         if os.path.exists(config_dict["TodoFile"]):
             with open(config_dict["TodoFile"], "r") as f:
                 todo_list = f.readlines()
-                self.ToDoList.setPlainText("\n".join(todo_list))
+                self.ToDoList.setPlainText("".join(todo_list))
 
+        # 当前实现中，该部分代码用了很多之前定义的变量，必须放在后面
+        initLLMMethods(self) # 初始化方法和button的关联
+
+    def updateTodo(self):
+        if self.TodoUpdateFlag:
+            self.ToDoList.setPlainText(self.TodoUpdateContent)
+            self.TodoUpdateFlag = False
 
     def paintEvent(self, event):
         # 绘制半透明白色背景
@@ -129,7 +139,7 @@ class DesktopPet(QWidget):
 
     def closeSave(self):
         # 获取待办事项列表
-        todo_list = self.ToDoList.toPlainText().split("\n")
+        todo_list = self.ToDoList.toPlainText()
 
         # 检查配置文件是否存在，不存在则创建
         if not os.path.exists(config_dict["TodoFile"]):
@@ -140,8 +150,7 @@ class DesktopPet(QWidget):
 
         # 记录当前的代办事项
         with open(config_dict["TodoFile"], "w") as f:
-            for line in todo_list:
-                f.write(line + "\n")
+            f.write(todo_list)
     
 
 if __name__ == '__main__':

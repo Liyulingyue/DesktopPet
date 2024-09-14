@@ -18,8 +18,6 @@ from ..LLM.ernie import ErnieClass
 config_dict = yaml.safe_load(
     open('Source/config.yaml')
 )
-if "ErnieToken" not in config_dict:
-    config_dict['ErnieToken'] = "1111111111" #赋无效值避免报错
 
 class ChatBox(QWidget):
     # 初始化界面
@@ -31,7 +29,7 @@ class ChatBox(QWidget):
 
         self.add_ui()
 
-        self.llm = ErnieClass(access_token=config_dict['ErnieToken'])
+        self.llm = ErnieClass(access_token=config_dict.get('ErnieToken', ""))
  
         # 启动线程
         self.work_thread()
