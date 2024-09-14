@@ -35,6 +35,11 @@ class DesktopPet(QWidget):
         initUI(self) # 初始化界面
         initPallet(self) # 托盘化初始
 
+        if os.path.exists(config_dict["TodoFile"]):
+            with open(config_dict["TodoFile"], "r") as f:
+                todo_list = f.readlines()
+                self.ToDoList.setPlainText("\n".join(todo_list))
+
 
     def paintEvent(self, event):
         # 绘制半透明白色背景
@@ -46,6 +51,7 @@ class DesktopPet(QWidget):
 
     # 退出操作，关闭程序
     def quit(self):
+        self.closeSave()
         self.close()
         sys.exit()
 
@@ -100,8 +106,8 @@ class DesktopPet(QWidget):
 
         # 定义菜单项
         actions = {
-            "hide": QAction('隐藏', self, triggered=lambda: self.setWindowOpacity(0)),
-            "ernie": QAction('文心一言', self, triggered=lambda: self.chatbox.show()),
+            "hide": QAction('隐藏到托盘', self, triggered=lambda: self.setWindowOpacity(0)),
+            # "ernie": QAction('文心一言', self, triggered=lambda: self.chatbox.show()),
             "control": QAction('打开/关闭控制板', self, triggered=lambda: self.controlBoxWidget.setVisible(not self.controlBoxWidget.isVisible()))
         }
         for key, value in actions.items():
@@ -111,7 +117,7 @@ class DesktopPet(QWidget):
         menu.addSeparator()
 
         # 添加退出菜单
-        ActionQuit = QAction('退出', self, triggered=qApp.quit)
+        ActionQuit = QAction('退出', self, triggered=self.quit)
         menu.addAction(ActionQuit)
 
         # 弹出菜单
@@ -121,6 +127,21 @@ class DesktopPet(QWidget):
         # if action == ActionQuit:
         #     print("退出")
 
+    def closeSave(self):
+        # 获取待办事项列表
+        todo_list = self.ToDoList.toPlainText().split("\n")
+
+        # 检查配置文件是否存在，不存在则创建
+        if not os.path.exists(config_dict["TodoFile"]):
+            # 创建文件夹
+            dir_path = os.path.dirname(config_dict["TodoFile"])
+            if not os.path.exists(dir_path):
+                os.makedirs(dir_path)
+
+        # 记录当前的代办事项
+        with open(config_dict["TodoFile"], "w") as f:
+            for line in todo_list:
+                f.write(line + "\n")
     
 
 if __name__ == '__main__':
