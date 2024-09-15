@@ -19,6 +19,7 @@
 ## 运行示意图
 ### 运行环境
 ![run_env.png](Docs/Images/run_env.png)
+![run_env2.png](Docs/Images/run_env2.png)
 
 ### 运行效果
 ![run_example.png](Docs/Images/run_example.png)
