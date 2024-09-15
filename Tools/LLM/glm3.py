@@ -124,3 +124,26 @@ class GLM3Class(object):
 
         self.chat_history.append({'role': 'assistant', 'content': result})
         return result
+
+    def get_llm_answer(self, prompt):
+        print(prompt)
+        history = [[parse_text(prompt), ""]]
+        model_inputs = convert_history_to_token(history, self.tokenizer)
+        generate_kwargs = dict(
+            input_ids=model_inputs,
+            max_new_tokens=self.max_sequence_length,
+            temperature=0.1,
+            do_sample=True,
+            top_p=1.0,
+            top_k=50,
+            repetition_penalty=1.1,
+            streamer=self.streamer,
+            stopping_criteria=StoppingCriteriaList(self.stop_tokens)
+        )
+        partial_text = self.ov_model.generate(**generate_kwargs)
+        # print(f"raw data is: {partial_text}")
+        partial_text = self.tokenizer.decode(partial_text[0])
+        partial_text = partial_text.split("<|assistant|> \n ")[-1]
+        print(partial_text)
+        result = partial_text
+        return result

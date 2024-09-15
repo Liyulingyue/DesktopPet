@@ -44,6 +44,9 @@ def initVar(window):
     elif config_dict["LLM"] == "glm3":
         from ...LLM.glm3 import GLM3Class
         window.llm = GLM3Class(config_dict.get("GLM3Directory", ""))
+    elif config_dict["LLM"] == "GRADIO":
+        from ...LLM.gr_server import GradioClass
+        window.llm = GradioClass(config_dict.get("GradioURL", ""))
     else:
         window.llm = None
 
