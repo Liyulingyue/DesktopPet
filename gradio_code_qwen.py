@@ -69,5 +69,5 @@ with gr.Blocks() as demo:
 
     btn.click(fn=fn_get_response, inputs=in_text, outputs=out_text)
 
-demo.launch(server_name="0.0.0.0", server_port=15001)
+demo.launch(server_name="0.0.0.0", server_port=8890)
 

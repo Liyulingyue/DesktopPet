@@ -13,6 +13,8 @@
 - **隐藏/显示功能**：支持一键隐藏和显示便签框。  
 - **基于 Prompt 的 TODO 管理**：利用大模型实现智能化的 TODO 项添加和整理。  
 - **大模型支持**：通过配置文件指定大模型，能够在本地CPU上使用 Openvino 提供的量化 GLM3 模型，也可以访问远程 API 服务。 
+   - 本地部署：基于 Openvino 的 GLM3
+   - 远程部署：基于阿里云的英特尔至强可扩展处理器的G8i云环境 部署Gradio客户端（由于网络下载数据缓慢的问题，服务器采用Qwen2-0.5B部署）
 
 ## 运行示意图
 ### 运行环境
@@ -42,7 +44,12 @@ pip install -r requirements.txt
      LLM: glm3
      GLM3Directory: Source/Model/chatglm3-6b-ov
      ```
-   2. 远程 API 服务（推荐）
+   2. 远程 API 服务（推荐，共两种方案，任取其一即可。方案1适合自己有服务器的用户，方案2适合自己没有服务器的用户）
+     - 以部署Qwen2为例，参考 `https://github.com/QwenLM/Qwen` 下载相关依赖后，运行 `gradio_code_qwen.py`，在 `/Source/config.json` 文件中配置如下字段
+     ```json
+     LLM: GRADIO
+     GradioURL: http://116.62.10.217:8890/ # 116.62.10.217需要改成你自己的服务器IP，8890需要改成你自己的端口号
+     ```
      - 在 `/Source/config.json` 文件中配置如下字段
      ```json
      LLM: ernie
