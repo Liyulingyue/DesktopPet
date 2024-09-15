@@ -18,7 +18,9 @@
 
 ## 运行示意图
 ### 运行环境
+- 本地部署采用 12th i7
 ![run_env.png](Docs/Images/run_env.png)
+- 远程部署采用 阿里云2核CPU8G内存的云服务器
 ![run_env2.png](Docs/Images/run_env2.png)
 
 ### 运行效果
