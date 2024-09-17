@@ -56,6 +56,7 @@ class ErnieClass(object):
         json_str = result[s_id+len(start_str):e_id]
         for replace_str in replace_list:
             json_str = json_str.replace(replace_str,"")
+        print(json_str)
         json_dict = json.loads(json_str)
         return json_dict
 

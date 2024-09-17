@@ -52,3 +52,4 @@ def initVar(window):
 
     window.TodoUpdateFlag = False
     window.TodoUpdateContent = ""
+    window.ButtonLock = False

@@ -50,6 +50,8 @@ class DesktopPet(QWidget):
         if self.TodoUpdateFlag:
             self.ToDoList.setPlainText(self.TodoUpdateContent)
             self.TodoUpdateFlag = False
+            self.ToDoTitle.setText("ToDoList(右键打开控制板)")
+            self.ButtonLock = False
 
     def paintEvent(self, event):
         # 绘制半透明白色背景
