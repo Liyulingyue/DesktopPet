@@ -126,21 +126,24 @@ def formatMethod(window):
     window.TodoUpdateFlag = True
 
 
-def simpleMethod(window):
+def archiveMethod(window):
     if not lockButton(window): # 未成功，则返回
         return
 
     todotext = window.ToDoList.toPlainText() # 获取界面上的任务列表文本
-
-    # 删除todotext第一行（第一个换行符即之前的内容删除）
-    if todotext.find("\n") != -1:
-        todotext = todotext[todotext.find("\n") + 1:]
-    else:
-        todotext = ''
+    window.TodoObj.update_todolist(todotext) # 更新任务列表
+    window.TodoObj.archive()
+    todotext = window.TodoObj.get_plaintext()
 
     # 避免卡死，必须在主线程更新UI
     window.TodoUpdateContent = todotext
     window.TodoUpdateFlag = True
+
+def reportMethod(window):
+    pass
+
+def copyreportMethod(window):
+    pass
 
 def initLLMMethods(window):
     # 多线程执行对应操作
@@ -150,4 +153,4 @@ def initLLMMethods(window):
     #window.btn_format.clicked.connect(lambda: formatMethod(window))
     window.btn_format.clicked.connect(lambda: threading.Thread(target=formatMethod, args=(window,)).start())
     #window.btn_simple.clicked.connect(lambda: simpleMethod(window))
-    window.btn_simple.clicked.connect(lambda: threading.Thread(target=simpleMethod, args=(window,)).start())
+    window.btn_simple.clicked.connect(lambda: threading.Thread(target=archiveMethod, args=(window,)).start())

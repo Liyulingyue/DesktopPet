@@ -33,6 +33,7 @@ def initLayout(window):
     # 配置layout
     window.ToDoTitle = QLabel("ToDoList(右键打开控制板)")
     window.ToDoList = QTextEdit()
+    window.ToDoList.setPlainText(window.TodoObj.get_plaintext())
     window.ControlTitle = QLabel("控制板")
     window.ContorlButton = QPushButton("打开/折叠")
     window.TextInput = QLineEdit()
@@ -40,7 +41,9 @@ def initLayout(window):
     window.btn_add = QPushButton("添加") # 根据prompt，在todolist末尾添加工作项
     window.btn_adjust = QPushButton("调整") # 根据prompt，调整工作项
     window.btn_format = QPushButton("对齐格式") # 对齐工作项的文本格式
-    window.btn_simple = QPushButton("移除一条") # 移除最上面一个工作项
+    window.btn_simple = QPushButton("完成一条") # 移除最上面一个工作项
+    window.btn_report = QPushButton("生成日报") # 将当前已完成事项生成日报
+    window.btn_reportcopy = QPushButton("复制日报") # 将当前列表输出到剪贴板中
 
 
     window.randomPosition() # 调用自定义的randomPosition，会使得宠物出现位置随机
@@ -73,6 +76,11 @@ def initLayout(window):
     ctrl_hbox = QHBoxLayout()
     ctrl_hbox.addWidget(window.btn_format)
     ctrl_hbox.addWidget(window.btn_simple)
+    ctrl_vbox.addLayout(ctrl_hbox)
+
+    ctrl_hbox = QHBoxLayout()
+    ctrl_hbox.addWidget(window.btn_report)
+    ctrl_hbox.addWidget(window.btn_reportcopy)
     ctrl_vbox.addLayout(ctrl_hbox)
 
     window.controlBoxWidget.setVisible(False) # 隐藏控制板

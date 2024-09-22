@@ -3,6 +3,7 @@ import os
 import yaml
 
 from ..chatbot import ChatBox
+from ...Classes.TodoClass import TodoClass
 
 config_dict = yaml.safe_load(
     open('Source/config.yaml')
@@ -53,3 +54,4 @@ def initVar(window):
     window.TodoUpdateFlag = False
     window.TodoUpdateContent = ""
     window.ButtonLock = False
+    window.TodoObj = TodoClass()

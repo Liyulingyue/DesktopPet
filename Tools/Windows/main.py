@@ -37,12 +37,6 @@ class DesktopPet(QWidget):
         initUI(self) # 初始化界面
         initPallet(self) # 托盘化初始
 
-        # 从配置中读取待办事项列表
-        if os.path.exists(config_dict["TodoFile"]):
-            with open(config_dict["TodoFile"], "r") as f:
-                todo_list = f.readlines()
-                self.ToDoList.setPlainText("".join(todo_list))
-
         # 当前实现中，该部分代码用了很多之前定义的变量，必须放在后面
         initLLMMethods(self) # 初始化方法和button的关联
 
@@ -142,18 +136,9 @@ class DesktopPet(QWidget):
     def closeSave(self):
         # 获取待办事项列表
         todo_list = self.ToDoList.toPlainText()
+        self.TodoObj.update_todolist(todo_list)
+        self.TodoObj.save()
 
-        # 检查配置文件是否存在，不存在则创建
-        if not os.path.exists(config_dict["TodoFile"]):
-            # 创建文件夹
-            dir_path = os.path.dirname(config_dict["TodoFile"])
-            if not os.path.exists(dir_path):
-                os.makedirs(dir_path)
-
-        # 记录当前的代办事项
-        with open(config_dict["TodoFile"], "w") as f:
-            f.write(todo_list)
-    
 
 if __name__ == '__main__':
     # 创建了一个QApplication对象，对象名为app，带两个参数argc,argv
