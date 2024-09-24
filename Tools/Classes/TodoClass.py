@@ -21,6 +21,7 @@ class TodoClass(object):
             self.todo_list = []
 
         self.archive_list = []
+        self.daily_report = ""
 
     def get_plaintext(self):
         return '\n'.join(self.todo_list)
@@ -60,13 +61,48 @@ class TodoClass(object):
         # 记录已归档的代办事项
         with open(config_dict["TodoArchive"], "a", encoding="utf8") as f:
             for item in self.archive_list:
-                f.write(f"{item['time']} - {item['content']}\n")
+                f.write(f"{item['time']} {item['content']}\n")
 
     def get_today_archives(self):
         today = datetime.date.today()
         archives = []
+        # 从历史记录中读取今天的归档
+        with open(config_dict["TodoArchive"], "r", encoding="utf8") as f:
+            lines = f.readlines()
+            for line in reversed(lines):
+                try:
+                    date = datetime.datetime.strptime(line[:19], "%Y-%m-%d-%H-%M-%S").date()
+                    if date == today:
+                        archives.append(line[20:].strip())
+                    else:
+                        break
+                except ValueError:
+                    pass
+        # 从当前记录中读取今天的归档
         for item in self.archive_list:
             date = datetime.datetime.strptime(item['time'], "%Y-%m-%d-%H-%M-%S").date()
             if date == today:
                 archives.append(item['content'])
         return "\n".join(archives)
+
+    def generate_report(self, llm):
+        archive_text = self.get_today_archives()
+        prompt = f"""
+        请根据用户今天完成的工作内容：{archive_text}，生成当日的工作总结。
+        请以json格式输出，字典内容如下：
+        {'{'}
+            Report: str, 当日的工作总结
+        {'}'}
+        """
+        report = llm.get_llm_json_answer(prompt)
+        try:
+            report = report['Report']
+        except:
+            report = "生成失败"
+
+        self.daily_report = report
+
+        return report
+
+    def get_report(self):
+        return self.daily_report

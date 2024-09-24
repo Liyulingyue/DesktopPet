@@ -56,8 +56,13 @@ class ErnieClass(object):
         json_str = result[s_id+len(start_str):e_id]
         for replace_str in replace_list:
             json_str = json_str.replace(replace_str,"")
-        print(json_str)
-        json_dict = json.loads(json_str)
+        # print(json_str)
+        try:
+            json_dict = json.loads(json_str)
+        except Exception as e:
+            print("Error: ", e)
+            print("json_str: ", json_str)
+            json_dict = {}
         return json_dict
 
     def get_llm_json_answer(self, prompt):

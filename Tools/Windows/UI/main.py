@@ -43,7 +43,7 @@ def initLayout(window):
     window.btn_format = QPushButton("对齐格式") # 对齐工作项的文本格式
     window.btn_simple = QPushButton("完成一条") # 移除最上面一个工作项
     window.btn_report = QPushButton("生成日报") # 将当前已完成事项生成日报
-    window.btn_reportcopy = QPushButton("复制日报") # 将当前列表输出到剪贴板中
+    window.btn_copyreport = QPushButton("复制日报") # 将当前列表输出到剪贴板中
 
 
     window.randomPosition() # 调用自定义的randomPosition，会使得宠物出现位置随机
@@ -80,7 +80,7 @@ def initLayout(window):
 
     ctrl_hbox = QHBoxLayout()
     ctrl_hbox.addWidget(window.btn_report)
-    ctrl_hbox.addWidget(window.btn_reportcopy)
+    ctrl_hbox.addWidget(window.btn_copyreport)
     ctrl_vbox.addLayout(ctrl_hbox)
 
     window.controlBoxWidget.setVisible(False) # 隐藏控制板

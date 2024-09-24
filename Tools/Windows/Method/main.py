@@ -1,5 +1,6 @@
 import threading
 
+import pyperclip
 from PyQt5.QtWidgets import QMessageBox
 
 
@@ -23,13 +24,11 @@ def addMethod(window):
     if not user_input.strip() == '':
         # task_text = user_input
         prompt = f"""
-请根据用户需求，对需求消耗时间进行规划，并输出结果。
+请根据用户需求进行规划，并输出结果。
 用户的需求是：{user_input}
 请以json格式输出。输出内容是一个list[字典]，字典内容如下：
 [{'{'}
-    'Time': float，单位为小时，任务需要的时间，对于大部分任务，取值0-10
-    'Task': str，具体的任务内容，
-    'Priority': int，取值为0-10，任务的优先级，越高越重要
+    Task: str，具体的任务内容
 {'}'}]
 如果任务需要拆分，则进行拆分，输出list中包含各个步骤。如果任务无需拆分，则输出仅含一个成员的list。
 """
@@ -38,7 +37,8 @@ def addMethod(window):
         if isinstance(llm_result, list):
             for item in llm_result:
                 if isinstance(item, dict):
-                    task_text += f"{item.get('Time', -1)}h {item.get('Task')} Rank:{item.get('Priority')}\n"
+                    # task_text += f"{item.get('Time', -1)}h {item.get('Task')} Rank:{item.get('Priority')}\n"
+                    task_text += f"{item.get('Task')}\n"
         # print(llm_result)
     else:
         task_text = ""
@@ -69,9 +69,7 @@ def adjustMethod(window):
 用户的需求是：{user_input}，当前的任务列表是：{todotext}。
 请以json格式输出（特别的，请不要在json中增加注释等辅助性的说明文本）。输出内容是一个list[字典]，字典内容如下：
 [{'{'}
-    'Time': float，单位为小时，任务需要的时间，对于大部分任务，取值0-10
-    'Task': str，具体的任务内容，
-    'Priority': int，取值为0-10，任务的优先级，越高越重要
+    Task: str，具体的任务内容，
 {'}'}]
 输出list中包含各个事项。如果仅存在一个事项，则输出仅含一个成员的list。
         """
@@ -80,7 +78,8 @@ def adjustMethod(window):
         if isinstance(llm_result, list):
             for item in llm_result:
                 if isinstance(item, dict):
-                    task_text += f"{item.get('Time', -1)}h {item.get('Task')} Rank:{item.get('Priority')}\n"
+                    # task_text += f"{item.get('Time', -1)}h {item.get('Task')} Rank:{item.get('Priority')}\n"
+                    task_text += f"{item.get('Task')}\n"
     else:
         task_text = todotext
 
@@ -104,9 +103,7 @@ def formatMethod(window):
 当前的任务列表是：{todotext}。
 请以json格式输出。输出内容是一个list[字典]，字典内容如下：
 [{'{'}
-    'Time': float，单位为小时，任务需要的时间，对于大部分任务，取值0-10
-    'Task': str，具体的任务内容，
-    'Priority': int，取值为0-10，任务的优先级，越高越重要
+    Task: str，具体的任务内容，
 {'}'}]
 输出list中包含各个事项。如果仅存在一个事项，则输出仅含一个成员的list。
     """)
@@ -116,8 +113,8 @@ def formatMethod(window):
     if isinstance(llm_result, list):
         for item in llm_result:
             if isinstance(item, dict):
-                task_text += f"{item.get('Time', -1)}h {item.get('Task')} Rank:{item.get('Priority')}\n"
-
+                # task_text += f"{item.get('Time', -1)}h {item.get('Task')} Rank:{item.get('Priority')}\n"
+                task_text += f"{item.get('Task')}\n"
     # 更新任务列表文本
     todotext = task_text
 
@@ -140,10 +137,30 @@ def archiveMethod(window):
     window.TodoUpdateFlag = True
 
 def reportMethod(window):
-    pass
+    # print("reportMethod")
+    if not lockButton(window): # 未成功，则返回
+        return
+
+    todotext = window.ToDoList.toPlainText() # 获取界面上的任务列表文本
+    window.TodoObj.generate_report(window.llm)
+
+    # 避免卡死，必须在主线程更新UI
+    window.TodoUpdateContent = todotext
+    window.TodoUpdateFlag = True
 
 def copyreportMethod(window):
-    pass
+    # print("copyreportMethod")
+    if not lockButton(window): # 未成功，则返回
+        return
+
+    todotext = window.ToDoList.toPlainText() # 获取界面上的任务列表文本
+    report = window.TodoObj.get_report()
+    # 访问粘贴板，将report复制在粘贴板内
+    pyperclip.copy(report)
+
+    # 避免卡死，必须在主线程更新UI
+    window.TodoUpdateContent = todotext
+    window.TodoUpdateFlag = True
 
 def initLLMMethods(window):
     # 多线程执行对应操作
@@ -154,3 +171,5 @@ def initLLMMethods(window):
     window.btn_format.clicked.connect(lambda: threading.Thread(target=formatMethod, args=(window,)).start())
     #window.btn_simple.clicked.connect(lambda: simpleMethod(window))
     window.btn_simple.clicked.connect(lambda: threading.Thread(target=archiveMethod, args=(window,)).start())
+    window.btn_report.clicked.connect(lambda: threading.Thread(target=reportMethod, args=(window,)).start())
+    window.btn_copyreport.clicked.connect(lambda: threading.Thread(target=copyreportMethod, args=(window,)).start())
