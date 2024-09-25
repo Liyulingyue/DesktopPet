@@ -8,3 +8,4 @@ openvino>=2024.0.0
 onnx==1.16.1
 huggingface-hub>=0.21.3
 pyqt5
+pyperclip
