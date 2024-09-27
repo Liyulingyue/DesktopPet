@@ -16,9 +16,9 @@ def initPallet(window):
 
     # 设置托盘菜单项
     actions = {
+        "show": QAction('显示界面', window, triggered=lambda: window.setWindowOpacity(1)), # 菜单项显示，配置透明度
+        "hide": QAction('隐藏到托盘', window, triggered=lambda: window.setWindowOpacity(0)), # 菜单项隐藏，配置透明度
         "quit": QAction('退出', window, triggered=window.quit), # 菜单项退出，点击后调用quit函数
-        "show": QAction('显示', window, triggered=lambda: window.setWindowOpacity(1)), # 菜单项显示，配置透明度
-        "hide": QAction('隐藏', window, triggered=lambda: window.setWindowOpacity(0)), # 菜单项隐藏，配置透明度
     }
 
     # 设置点击选项的图片

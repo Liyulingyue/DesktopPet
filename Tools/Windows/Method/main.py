@@ -1,7 +1,7 @@
 import threading
 
 import pyperclip
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QMenu, QAction
 
 
 def lockButton(window):
@@ -13,7 +13,7 @@ def lockButton(window):
     else:
         return False
 
-def addMethod(window):
+def addMethod(window, type="LLM"):
     if not lockButton(window): # 未成功，则返回
         return
 
@@ -22,24 +22,26 @@ def addMethod(window):
 
     # 如果用户输入的文本不为空，则执行以下操作
     if not user_input.strip() == '':
-        # task_text = user_input
-        prompt = f"""
-请根据用户需求进行规划，并输出结果。
-用户的需求是：{user_input}
-请以json格式输出。输出内容是一个list[字典]，字典内容如下：
-[{'{'}
-    Task: str，具体的任务内容
-{'}'}]
-如果任务需要拆分，则进行拆分，输出list中包含各个步骤。如果任务无需拆分，则输出仅含一个成员的list。
-"""
-        llm_result = window.llm.get_llm_json_answer(prompt)
-        task_text = ""
-        if isinstance(llm_result, list):
-            for item in llm_result:
-                if isinstance(item, dict):
-                    # task_text += f"{item.get('Time', -1)}h {item.get('Task')} Rank:{item.get('Priority')}\n"
-                    task_text += f"{item.get('Task')}\n"
-        # print(llm_result)
+        if type == "LLM":
+            prompt = f"""
+    请根据用户需求进行规划，并输出结果。
+    用户的需求是：{user_input}
+    请以json格式输出。输出内容是一个list[字典]，字典内容如下：
+    [{'{'}
+        Task: str，具体的任务内容
+    {'}'}]
+    如果任务需要拆分，则进行拆分，输出list中包含各个步骤。如果任务无需拆分，则输出仅含一个成员的list。
+    """
+            llm_result = window.llm.get_llm_json_answer(prompt)
+            task_text = ""
+            if isinstance(llm_result, list):
+                for item in llm_result:
+                    if isinstance(item, dict):
+                        # task_text += f"{item.get('Time', -1)}h {item.get('Task')} Rank:{item.get('Priority')}\n"
+                        task_text += f"{item.get('Task')}\n"
+            # print(llm_result)
+        else:
+            task_text = user_input
     else:
         task_text = ""
 
@@ -170,6 +172,38 @@ def initLLMMethods(window):
     #window.btn_format.clicked.connect(lambda: formatMethod(window))
     window.btn_format.clicked.connect(lambda: threading.Thread(target=formatMethod, args=(window,)).start())
     #window.btn_simple.clicked.connect(lambda: simpleMethod(window))
-    window.btn_simple.clicked.connect(lambda: threading.Thread(target=archiveMethod, args=(window,)).start())
+    window.btn_archive.clicked.connect(lambda: threading.Thread(target=archiveMethod, args=(window,)).start())
     window.btn_report.clicked.connect(lambda: threading.Thread(target=reportMethod, args=(window,)).start())
     window.btn_copyreport.clicked.connect(lambda: threading.Thread(target=copyreportMethod, args=(window,)).start())
+
+def initRightClickMenu(window):
+    # 定义菜单
+    window.menu = QMenu(window)
+
+    # 定义功能菜单项
+    actions = {
+        # "ernie":      QAction('文心一言', self, triggered=lambda: self.chatbox.show()),
+        "simple_add":   QAction('添加一行', window, triggered=lambda: threading.Thread(target=addMethod, args=(window, "Origin")).start()),
+        "add":          QAction('添加一行(LLM+Prompt)', window, triggered=lambda: threading.Thread(target=addMethod, args=(window, "LLM")).start()),
+        "adjust":       QAction('调整任务(LLM+Prompt)', window, triggered=lambda: threading.Thread(target=adjustMethod, args=(window,)).start()),
+        "format":       QAction('整理任务(LLM)', window, triggered=lambda: threading.Thread(target=formatMethod, args=(window,)).start()),
+        "archive":      QAction('完成一项', window, triggered=lambda: threading.Thread(target=archiveMethod, args=(window,)).start()),
+        "report":       QAction('生成报告(LLM)', window, triggered=lambda: threading.Thread(target=reportMethod, args=(window,)).start()),
+        "copyreport":   QAction('复制报告', window, triggered=lambda: threading.Thread(target=copyreportMethod, args=(window,)).start()),
+    }
+    for key, value in actions.items():
+        window.menu.addAction(value)
+
+    # 添加分割线
+    window.menu.addSeparator()
+
+    # 定义常规菜单项
+    actions = {
+        "save":   QAction('保存', window, triggered=window.saveToDoList),
+        "hide":   QAction('隐藏到托盘', window, triggered=lambda: window.setWindowOpacity(0)),
+        "control":QAction('展开/折叠按钮', window,
+                           triggered=lambda: window.controlBoxWidget.setVisible(not window.controlBoxWidget.isVisible())),
+        "quit":   QAction('退出', window, triggered=window.quit),
+    }
+    for key, value in actions.items():
+        window.menu.addAction(value)

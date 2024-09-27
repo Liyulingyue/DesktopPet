@@ -9,12 +9,11 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from .Method.main import initLLMMethods
+from .Method.main import initLLMMethods, initRightClickMenu
 from .Timer.main import initTimer # 初始化定时器
 from .Var.main import initVar # 初始化变量
 from .UI.main import initUI # 初始化界面
 from .Pallet.main import initPallet # 初始化托盘参数
-from .chatbot import ChatBox
 
 # from transformers.dependency_versions_check import pkgs_to_check_at_runtime
 # print(pkgs_to_check_at_runtime)
@@ -39,6 +38,7 @@ class DesktopPet(QWidget):
 
         # 当前实现中，该部分代码用了很多之前定义的变量，必须放在后面
         initLLMMethods(self) # 初始化方法和button的关联
+        initRightClickMenu(self) # 初始化菜单
 
     def updateTodo(self):
         if self.TodoUpdateFlag:
@@ -47,19 +47,26 @@ class DesktopPet(QWidget):
             self.ToDoTitle.setText("ToDoList(右键打开控制板)")
             self.ButtonLock = False
 
+    # 退出操作，关闭程序
+    def quit(self):
+        self.saveToDoList()
+        self.close()
+        sys.exit()
+
+    def saveToDoList(self):
+        # 获取待办事项列表
+        todo_list = self.ToDoList.toPlainText()
+        self.TodoObj.update_todolist(todo_list)
+        self.TodoObj.save()
+
+
     def paintEvent(self, event):
         # 绘制半透明白色背景
         painter = QtGui.QPainter(self)
         painter.setRenderHint(QtGui.QPainter.Antialiasing)
-        color = QtGui.QColor(255, 255, 255, 160)  # 白色: 255, 255, 255，透明度：50% 透明度 (255 * 0.5 = 128)
+        color = QtGui.QColor(173, 216, 230, 160)  # 白色: 255, 255, 255，透明度：50% 透明度 (255 * 0.5 = 128)
         painter.fillRect(self.rect(), color)
         painter.end()
-
-    # 退出操作，关闭程序
-    def quit(self):
-        self.closeSave()
-        self.close()
-        sys.exit()
 
     # 宠物随机位置
     def randomPosition(self):
@@ -75,9 +82,6 @@ class DesktopPet(QWidget):
     def mousePressEvent(self, event):
         # 判断是否为鼠标左键
         if event.button() == Qt.LeftButton:
-            # 宠物点击状态为点击
-            self.petstate = "Hang"  # 更改宠物状态为点击
-            self.talkstate = "Hang"  # 更改宠物对话状态
             self.is_follow_mouse = True # 设置为绑定状态
             # 获取窗口的位置
             #   globalPos() 事件触发点相对于桌面的位置
@@ -99,45 +103,17 @@ class DesktopPet(QWidget):
     # 鼠标释放调用，取消绑定
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.LeftButton:
-            self.petstate = "Normal"  # 更改宠物状态为点击
-            self.talkstate = "Normal"  # 更改宠物对话状态
             self.is_follow_mouse = False
 
             self.setCursor(QCursor(Qt.ArrowCursor)) # 鼠标图形设置为箭头
 
     # 宠物右键点击交互
     def contextMenuEvent(self, event):
-        # 定义菜单
-        menu = QMenu(self)
-
-        # 定义菜单项
-        actions = {
-            "hide": QAction('隐藏到托盘', self, triggered=lambda: self.setWindowOpacity(0)),
-            # "ernie": QAction('文心一言', self, triggered=lambda: self.chatbox.show()),
-            "control": QAction('打开/关闭控制板', self, triggered=lambda: self.controlBoxWidget.setVisible(not self.controlBoxWidget.isVisible()))
-        }
-        for key, value in actions.items():
-            menu.addAction(value)
-
-        # 添加分割线
-        menu.addSeparator()
-
-        # 添加退出菜单
-        ActionQuit = QAction('退出', self, triggered=self.quit)
-        menu.addAction(ActionQuit)
-
-        # 弹出菜单
-        # menu.exec_()方法用于显示一个弹出菜单（通常是一个QMenu实例），并等待用户选择一个动作
+        # 弹出菜单，menu.exec_()方法用于显示一个弹出菜单（通常是一个QMenu实例），并等待用户选择一个动作
         # 该方法会阻塞当前的事件循环，直到用户选择了菜单中的一个项或关闭了菜单
-        action = menu.exec_(self.mapToGlobal(event.pos()))
+        action = self.menu.exec_(self.mapToGlobal(event.pos()))
         # if action == ActionQuit:
         #     print("退出")
-
-    def closeSave(self):
-        # 获取待办事项列表
-        todo_list = self.ToDoList.toPlainText()
-        self.TodoObj.update_todolist(todo_list)
-        self.TodoObj.save()
 
 
 if __name__ == '__main__':

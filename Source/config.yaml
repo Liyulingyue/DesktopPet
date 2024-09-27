@@ -1,8 +1,8 @@
 Icon: Source/Image/Icon.png
 TodoFile: Source/Text/Todo.txt
 TodoArchive: Source/Text/TodoArchive.txt
-LLM: ernie # ernie, glm3, GRADIO, WITHOUT
-ErnieToken: 88ea362d6879c26099c527ebcf7fa601817ca10b
-GLM3Directory: Source/Model/chatglm3-6b-ov
-GradioURL: http://116.62.10.217:8890/
 TodoUIUpdateTime: 100
+LLM: ernie # ernie, glm3, GRADIO, WITHOUT
+ErnieToken: 88ea362d6879c26099c527ebcf7fa601817ca10b # when LLM is ernie, use this token
+GLM3Directory: Source/Model/chatglm3-6b-ov # when LLM is glm3, use this directory
+GradioURL: http://116.62.10.217:8890/ # when LLM is GRADIO, use this URL

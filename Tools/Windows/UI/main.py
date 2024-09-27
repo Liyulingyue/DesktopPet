@@ -1,7 +1,7 @@
 import yaml
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtGui import QMovie, QTextList, QTextLine
+from PyQt5.QtGui import QMovie, QTextList, QTextLine, QPalette, QColor
 from PyQt5.QtWidgets import QLabel, QVBoxLayout, QTextEdit, QPushButton, QLineEdit, QHBoxLayout, QWidget, QFrame
 
 config_dict = yaml.safe_load(
@@ -32,16 +32,26 @@ def initUI(window):
 def initLayout(window):
     # 配置layout
     window.ToDoTitle = QLabel("ToDoList(右键打开控制板)")
+    # # 设置ToDoTitle的背景颜色为浅蓝色，透明度为50%
+    # palette = QPalette()
+    # # 设置颜色，这里RGBA分别代表红、绿、蓝、透明度，浅蓝色
+    # color = QColor(173, 216, 230, 128)  # RGBA格式，透明度128约等于50%
+    # palette.setColor(QPalette.Background, color)
+    # window.ToDoTitle.setPalette(palette)
+    # window.ToDoTitle.setAutoFillBackground(True)  # 确保背景被填充
+
     window.ToDoList = QTextEdit()
     window.ToDoList.setPlainText(window.TodoObj.get_plaintext())
-    window.ControlTitle = QLabel("控制板")
-    window.ContorlButton = QPushButton("打开/折叠")
+    # 限制TODOList的高度最大不超过1/5屏幕高度
+    # screen_size = QtGui.QGuiApplication.primaryScreen().size()
+    # max_height = int(screen_size.height() * 0.2)
+    # window.ToDoList.setMaximumHeight(max_height)
     window.TextInput = QLineEdit()
 
-    window.btn_add = QPushButton("添加") # 根据prompt，在todolist末尾添加工作项
+    window.btn_add = QPushButton("添加一行") # 根据prompt，在todolist末尾添加工作项
     window.btn_adjust = QPushButton("调整") # 根据prompt，调整工作项
     window.btn_format = QPushButton("对齐格式") # 对齐工作项的文本格式
-    window.btn_simple = QPushButton("完成一条") # 移除最上面一个工作项
+    window.btn_archive = QPushButton("完成一条") # 移除最上面一个工作项
     window.btn_report = QPushButton("生成日报") # 将当前已完成事项生成日报
     window.btn_copyreport = QPushButton("复制日报") # 将当前列表输出到剪贴板中
 
@@ -55,13 +65,12 @@ def initLayout(window):
     vbox = QVBoxLayout()
     vbox.addWidget(window.ToDoTitle)
     vbox.addWidget(window.ToDoList)
+    vbox.addWidget(QLabel("Prompt"))
+    vbox.addWidget(window.TextInput)
     vbox.addWidget(window.controlBoxWidget)
 
     ctrl_vbox = QVBoxLayout(window.controlBoxWidget)
-    ctrl_vbox.addWidget(QLabel("控制板"))
-    ctrl_vbox.addWidget(QLabel(" ▽ Prompt"))
-    ctrl_vbox.addWidget(window.TextInput)
-    ctrl_vbox.addWidget(QLabel(" ▽ Buttons"))
+    # ctrl_vbox.addWidget(QLabel("控制板"))
 
     ctrl_hbox = QHBoxLayout()
     ctrl_hbox.addWidget(window.btn_add)
@@ -75,7 +84,7 @@ def initLayout(window):
 
     ctrl_hbox = QHBoxLayout()
     ctrl_hbox.addWidget(window.btn_format)
-    ctrl_hbox.addWidget(window.btn_simple)
+    ctrl_hbox.addWidget(window.btn_archive)
     ctrl_vbox.addLayout(ctrl_hbox)
 
     ctrl_hbox = QHBoxLayout()

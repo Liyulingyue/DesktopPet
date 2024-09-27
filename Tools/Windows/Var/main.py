@@ -2,7 +2,6 @@ import os
 
 import yaml
 
-from ..chatbot import ChatBox
 from ...Classes.TodoClass import TodoClass
 
 config_dict = yaml.safe_load(
@@ -11,33 +10,8 @@ config_dict = yaml.safe_load(
 
 
 def initVar(window):
-    '''
-    宠物状态应当为：
-    Normal: 正常待机
-    Hang: 鼠标长按拖拽
-    Rest: 休息
-    '''
-    window.HideInputFlag = False
-
-    window.petstate = "Normal" # 宠物状态
-
-    '''
-    宠物对话状态应当为：
-    Normal: 正常对话
-    Hang: 鼠标长按拖拽，停止对话
-    '''
-    window.talkstate = "Normal" # 宠物对话状态
-
-    '''
-    宠物休息状态应当为：
-    Normal: 正常
-    Rest: 休息
-    '''
-    window.reststate = "Normal" # 宠物休息状态
-
     window.is_follow_mouse = False # 是否跟随鼠标
     window.mouse_drag_pos = None # 拖拽事件的辅助变量
-    window.chatbox = ChatBox() # 初始化聊天框
 
     if config_dict["LLM"] == "ernie":
         from ...LLM.ernie import ErnieClass

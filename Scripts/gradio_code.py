@@ -4,7 +4,7 @@ import yaml
 from Tools.LLM.glm3 import GLM3Class
 
 config_dict = yaml.safe_load(
-    open('Source/config.yaml')
+    open('../Source/config.yaml')
 )
 
 llm = GLM3Class(config_dict.get("GLM3Directory", ""))
