@@ -33,4 +33,6 @@ def initPallet(window):
     menu_icon = QSystemTrayIcon(window)
     menu_icon.setIcon(QIcon(icons)) # 设置托盘图标
     menu_icon.setContextMenu(menu) # 设置托盘菜单
+    # 配置托盘左键单击事件
+    menu_icon.activated.connect(lambda click_type: actions["show"].trigger() if click_type == QSystemTrayIcon.Trigger else None)
     menu_icon.show() # 展示
