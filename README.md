@@ -79,8 +79,8 @@ python main.py
    
    3. 将Source和exe放在同级目录下发给其他人即可。
 
-## 代码框架与技术细节
-懒得写了，就这样空着吧。
+## 代码框架
+![workflow.png](Docs/Images/workflow.png)
 
 ## 鸣谢
 本项目参考了以下开源项目：
