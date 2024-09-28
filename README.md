@@ -21,6 +21,9 @@
 运行后，会生成一个悬浮在桌面上的便签框，右键边缘区域，可以执行对应操作。隐藏后，你也可以通过右击托盘区域的图标执行相关操作。
 ![run_example.png](Docs/Images/run_example.png)
 
+功能演示如下：
+![run_example2.png](Docs/Images/run_example2.png)
+
 ## 快速开始 
 
 1. 下载或克隆本项目到本地。  

@@ -3,6 +3,6 @@ TodoFile: Source/Text/Todo.txt
 TodoArchive: Source/Text/TodoArchive.txt
 TodoUIUpdateTime: 100
 LLM: ernie # ernie, glm3, GRADIO, WITHOUT
-ErnieToken: xxxxxxxxxxxxxxxxxxxxxxxxxxxxx # when LLM is ernie, use this token
+ErnieToken: 88ea362d6879c26099c527ebcf7fa601817ca10b # when LLM is ernie, use this token
 GLM3Directory: Source/Model/chatglm3-6b-ov # when LLM is glm3, use this directory
 GradioURL: http://116.62.10.217:8890/ # when LLM is GRADIO, use this URL
