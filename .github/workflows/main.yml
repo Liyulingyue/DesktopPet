@@ -14,7 +14,7 @@ jobs:
         uses: JackMcKew/pyinstaller-action-windows@main  # 使用 PyInstaller-Action-Windows Action
         with:
           path: .  # 你的 Python 源代码所在的目录
-          spec: myapp.spec  # 你的 .spec 文件（如果有的话）
+          spec: main.spec  # 你的 .spec 文件（如果有的话）
 
       - name: Upload artifact
         uses: actions/upload-artifact@main  # 上传生成的 .exe 文件作为 Artifact
