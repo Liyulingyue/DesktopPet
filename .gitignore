@@ -4,3 +4,4 @@ build
 dist
 Source/Model/
 Source/chatglm3-6b-ov/
+idea/
