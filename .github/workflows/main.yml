@@ -1,0 +1,23 @@
+name: Build Windows Executable
+
+on: [push]  # 当代码被推送到仓库时触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # 在最新的 Ubuntu 虚拟机上运行
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@main  # 检出仓库代码
+
+      - name: Build executable
+        uses: JackMcKew/pyinstaller-action-windows@main  # 使用 PyInstaller-Action-Windows Action
+        with:
+          path: .  # 你的 Python 源代码所在的目录
+          spec: myapp.spec  # 你的 .spec 文件（如果有的话）
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@main  # 上传生成的 .exe 文件作为 Artifact
+        with:
+          name: executable
+          path: dist/main.exe  # 你的 .exe 文件生成的路径

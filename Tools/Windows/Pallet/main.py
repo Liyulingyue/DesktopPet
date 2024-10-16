@@ -20,7 +20,7 @@ def initPallet(window):
     actions = {
         "show": QAction('显示界面', window, triggered=lambda: window.setWindowOpacity(1)), # 菜单项显示，配置透明度
         "hide": QAction('隐藏到托盘', window, triggered=lambda: window.setWindowOpacity(0)), # 菜单项隐藏，配置透明度
-        "ernie": QAction('打开文心一言', window, triggered=lambda: webbrowser.open("https://yiyan.baidu.com")),  # 修改这里以打开网页
+        "ernie": QAction('打开文心一言', window, triggered=lambda: webbrowser.open("https://yiyan.baidu.com")),  # 打开网页
         "quit": QAction('退出', window, triggered=window.quit), # 菜单项退出，点击后调用quit函数
     }
 

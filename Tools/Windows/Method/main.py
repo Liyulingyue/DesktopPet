@@ -1,4 +1,5 @@
 import threading
+import webbrowser
 
 import pyperclip
 from PyQt5.QtWidgets import QMessageBox, QMenu, QAction
@@ -204,6 +205,7 @@ def initRightClickMenu(window):
         "hide":   QAction('隐藏到托盘', window, triggered=lambda: window.setWindowOpacity(0)),
         "control":QAction('展开/折叠按钮', window,
                            triggered=lambda: window.controlBoxWidget.setVisible(not window.controlBoxWidget.isVisible())),
+        "ernie":  QAction('打开文心一言', window, triggered=lambda: webbrowser.open("https://yiyan.baidu.com")),  # 打开网页
         "quit":   QAction('退出', window, triggered=window.quit),
     }
     for key, value in actions.items():
