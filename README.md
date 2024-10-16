@@ -78,7 +78,7 @@ python main.py
    2. 打包程序 
        > 注意，如果你使用了openvino，需要使用 --collect-all 进行打包。如果你使用gradio，需要从.spec对打包格式进行配置，请参考 https://blog.csdn.net/m0_74259636/article/details/135487933 。
 
-       `pyinstaller -i Source/Icon.png -F -w main.py` 
+       `pyinstaller -i Source/Image/Icon.png -F -w main.py` 
    
    3. 将Source和exe放在同级目录下发给其他人即可。
 

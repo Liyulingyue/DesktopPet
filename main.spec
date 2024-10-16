@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['main.exe'],
+    ['main.py'],
     pathex=[],
     binaries=[],
     datas=[],
@@ -22,7 +22,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='main',
+    name='ToDoList',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -35,5 +35,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['Source\\Icon.png'],
+    icon=['Source\\Image\\Icon.png'],
 )

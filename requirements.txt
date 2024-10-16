@@ -3,3 +3,4 @@ pyyaml
 erniebot
 pyqt5
 pyperclip
+matplotlib
