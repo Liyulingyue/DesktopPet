@@ -10,14 +10,29 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@main  # 检出仓库代码
 
+      - name: Install tree (if needed)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tree
+
+      - name: List directory contents before build
+        run: |
+          echo "Listing directory contents before build:"
+          tree .
+
       - name: Build executable
         uses: JackMcKew/pyinstaller-action-windows@main  # 使用 PyInstaller-Action-Windows Action
         with:
           path: .  # 你的 Python 源代码所在的目录
           spec: main.spec  # 你的 .spec 文件（如果有的话）
 
+      - name: List directory contents after build
+        run: |
+          echo "Listing directory contents after build:"
+          tree .
+
       - name: Upload artifact
         uses: actions/upload-artifact@main  # 上传生成的 .exe 文件作为 Artifact
         with:
           name: executable
-          path: dist/ToDoList.exe  # 你的 .exe 文件生成的路径
+          path: ./dist/ToDoList.exe  # 你的 .exe 文件生成的路径
