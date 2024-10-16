@@ -2,4 +2,5 @@ main.exe
 venv
 build
 dist
-Source/Model/*
+Source/Model/
+Source/chatglm3-6b-ov/
