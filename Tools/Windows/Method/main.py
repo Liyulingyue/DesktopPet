@@ -138,13 +138,13 @@ def archiveMethod(window):
     window.TodoUpdateContent = todotext
     window.TodoUpdateFlag = True
 
-def reportMethod(window):
+def reportMethod(window, report_type="LLM"):
     # print("reportMethod")
     if not lockButton(window): # 未成功，则返回
         return
 
     todotext = window.ToDoList.toPlainText() # 获取界面上的任务列表文本
-    window.TodoObj.generate_report(window.llm)
+    window.TodoObj.generate_report(window.llm, report_type)
 
     # 避免卡死，必须在主线程更新UI
     window.TodoUpdateContent = todotext
@@ -182,14 +182,15 @@ def initRightClickMenu(window):
 
     # 定义功能菜单项
     actions = {
-        # "ernie":      QAction('文心一言', self, triggered=lambda: self.chatbox.show()),
-        "simple_add":   QAction('添加一行', window, triggered=lambda: threading.Thread(target=addMethod, args=(window, "Origin")).start()),
-        "add":          QAction('添加一行(LLM+Prompt)', window, triggered=lambda: threading.Thread(target=addMethod, args=(window, "LLM")).start()),
-        "adjust":       QAction('调整任务(LLM+Prompt)', window, triggered=lambda: threading.Thread(target=adjustMethod, args=(window,)).start()),
-        "format":       QAction('整理任务(LLM)', window, triggered=lambda: threading.Thread(target=formatMethod, args=(window,)).start()),
-        "archive":      QAction('完成一项', window, triggered=lambda: threading.Thread(target=archiveMethod, args=(window,)).start()),
-        "report":       QAction('生成报告(LLM)', window, triggered=lambda: threading.Thread(target=reportMethod, args=(window,)).start()),
-        "copyreport":   QAction('复制报告', window, triggered=lambda: threading.Thread(target=copyreportMethod, args=(window,)).start()),
+        # "ernie":       QAction('文心一言', self, triggered=lambda: self.chatbox.show()),
+        "simple_add":    QAction('添加一行', window, triggered=lambda: threading.Thread(target=addMethod, args=(window, "Origin")).start()),
+        "add":           QAction('添加一行(LLM+Prompt)', window, triggered=lambda: threading.Thread(target=addMethod, args=(window, "LLM")).start()),
+        "adjust":        QAction('调整任务(LLM+Prompt)', window, triggered=lambda: threading.Thread(target=adjustMethod, args=(window,)).start()),
+        "format":        QAction('整理任务(LLM)', window, triggered=lambda: threading.Thread(target=formatMethod, args=(window,)).start()),
+        "archive":       QAction('完成一项', window, triggered=lambda: threading.Thread(target=archiveMethod, args=(window,)).start()),
+        "simple_report": QAction('生成报告', window, triggered=lambda: threading.Thread(target=reportMethod, args=(window, "pure",)).start()),
+        "report":        QAction('生成报告(LLM)', window, triggered=lambda: threading.Thread(target=reportMethod, args=(window,)).start()),
+        "copyreport":    QAction('复制报告', window, triggered=lambda: threading.Thread(target=copyreportMethod, args=(window,)).start()),
     }
     for key, value in actions.items():
         window.menu.addAction(value)

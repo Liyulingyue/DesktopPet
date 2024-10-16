@@ -85,20 +85,23 @@ class TodoClass(object):
                 archives.append(item['content'])
         return "\n".join(archives)
 
-    def generate_report(self, llm):
+    def generate_report(self, llm, report_type="llm"):
         archive_text = self.get_today_archives()
-        prompt = f"""
-        请根据用户今天完成的工作内容：{archive_text}，生成当日的工作总结。
-        请以json格式输出，字典内容如下：
-        {'{'}
-            Report: str, 当日的工作总结
-        {'}'}
-        """
-        report = llm.get_llm_json_answer(prompt)
-        try:
-            report = report['Report']
-        except:
-            report = "生成失败"
+        if report_type == "llm":
+            prompt = f"""
+            请根据用户今天完成的工作内容：{archive_text}，生成当日的工作总结。
+            请以json格式输出，字典内容如下：
+            {'{'}
+                Report: str, 当日的工作总结
+            {'}'}
+            """
+            report = llm.get_llm_json_answer(prompt)
+            try:
+                report = report['Report']
+            except:
+                report = "生成失败"
+        else:
+            report = archive_text
 
         self.daily_report = report
 
