@@ -7,32 +7,46 @@ jobs:
     runs-on: ubuntu-latest  # 在最新的 Ubuntu 虚拟机上运行
 
     steps:
-      - name: Checkout code
+      - name: Checkout code # 检出代码
         uses: actions/checkout@main  # 检出仓库代码
 
-      - name: Install tree (if needed)
+      - name: Install tree (if needed) # 安装 tree
         run: |
           sudo apt-get update
           sudo apt-get install -y tree
 
-      - name: List directory contents before build
+      - name: List directory contents before build # 列出目录内容
         run: |
           echo "Listing directory contents before build:"
           tree .
 
-      - name: Build executable
+      - name: Build executable # 构建可执行文件
         uses: JackMcKew/pyinstaller-action-windows@main  # 使用 PyInstaller-Action-Windows Action
         with:
           path: .  # 你的 Python 源代码所在的目录
           spec: main.spec  # 你的 .spec 文件（如果有的话）
 
-      - name: List directory contents after build
+      - name: List directory contents after build # 列出目录内容
         run: |
           echo "Listing directory contents after build:"
           tree .
 
-      - name: Upload artifact
+      - name: Package executable and source # 打包可执行文件和源代码
+        run: |
+          mkdir ./ToDoListDist
+          cp ./dist/windows/ToDoList.exe ./ToDoListDist/ToDoList.exe
+          cp -r ./Source ./ToDoListDist/Source
+          zip -r ToDoList.zip ./ToDoListDist
+
+      - name: Upload exe artifact
         uses: actions/upload-artifact@main  # 上传生成的 .exe 文件作为 Artifact
         with:
           name: executable
-          path: ./dist/ToDoList.exe  # 你的 .exe 文件生成的路径
+          path: ./dist/windows/ToDoList.exe  # 针对脚本，生成的exe路径
+
+
+      - name: Upload zip artifact
+        uses: actions/upload-artifact@main
+        with:
+          name: source-and-executable-zip
+          path: ./ToDoList.zip
