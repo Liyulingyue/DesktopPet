@@ -3,5 +3,6 @@ venv
 build
 dist
 Source/Model/
+Source/Text/
 Source/chatglm3-6b-ov/
-idea/
+.idea/
