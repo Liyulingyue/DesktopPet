@@ -4,3 +4,4 @@ erniebot
 pyqt5
 pyperclip
 matplotlib
+pyserial # for desktop pet only
