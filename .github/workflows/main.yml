@@ -24,7 +24,13 @@ jobs:
         uses: JackMcKew/pyinstaller-action-windows@main  # 使用 PyInstaller-Action-Windows Action
         with:
           path: .  # 你的 Python 源代码所在的目录
-          spec: main.spec  # 你的 .spec 文件（如果有的话）
+          spec: ./Spec/main.spec  # 你的 .spec 文件（如果有的话）
+
+      - name: Build Pet executable # 构建可执行文件
+        uses: JackMcKew/pyinstaller-action-windows@main  # 使用 PyInstaller-Action-Windows Action
+        with:
+          path: .  # 你的 Python 源代码所在的目录
+          spec: ./Spec/main_PetChat.spec  # 你的 .spec 文件（如果有的话）
 
       - name: List directory contents after build # 列出目录内容
         run: |
@@ -44,6 +50,11 @@ jobs:
           name: executable
           path: ./dist/windows/ToDoList.exe  # 针对脚本，生成的exe路径
 
+      - name: Upload Pet exe artifact
+        uses: actions/upload-artifact@main  # 上传生成的 .exe 文件作为 Artifact
+        with:
+          name: executable
+          path: ./dist/windows/PetChat.exe  # 针对脚本，生成的exe路径
 
       - name: Upload zip artifact
         uses: actions/upload-artifact@main

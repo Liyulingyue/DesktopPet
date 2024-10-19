@@ -32,4 +32,4 @@ class PetChatBox(QWidget):
 
     def closeEvent(self, event):
         self.SerialObj.close_serial()
-
+        self.setVisible(False)
