@@ -95,6 +95,9 @@ python main.py
 ## 代码框架
 ![workflow.png](Docs/Images/workflow.png)
 
+## 配置文件
+字段与具体含义参考 `/Source/config.json`
+
 ## 鸣谢
 本项目参考了以下开源项目：
 - https://github.com/openvino-dev-samples/chatglm3.openvino
