@@ -62,7 +62,7 @@
 
 ### 运行MicroPython程序
 如果你第一次接触树莓派Pico
-1. 请参考 [英文教程](https://www.raspberrypi.com/documentation/microcontrollers/micropython.html) 或者 [中文教程](https://pidoc.cn/docs/microcontrollers/micropython)运行程序。
+1. 请参考 [英文教程](https://www.raspberrypi.com/documentation/microcontrollers/micropython.html) 或者 [中文教程](https://pidoc.cn/docs/microcontrollers/micropython)安装MicroPython到树莓派Pico
 2. 安装[Thonny IDE](https://thonny.org/)
 
 将树莓派Pico和电脑通过USB数据线连接，打开Thonny IDE（在Thonny IDE中，点击右下角选择解释器到你的树莓派Pico），通过编辑器打开本仓库 `DevelepSource/DesktopPet/main.py` 和 `DevelepSource/DesktopPet/ssd1306.py` 文件，点击另存为保存到树莓派中，命名保持相同即可。
