@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['main_PetChat.py'],
+    ['../main_PetChat.py'],
     pathex=[],
     binaries=[],
     datas=[],
