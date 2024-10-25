@@ -1,7 +1,18 @@
+import threading
+import time
+
+import yaml
+
+config_dict = yaml.safe_load(
+    open('Source/config.yaml')
+)
+
 def initMethods(window):
     window.btn_connect.clicked.connect(lambda: openSerial(window))
-    window.btn_send.clicked.connect(lambda: SendPrompt(window))
-
+    if config_dict["DesktopPetReceive"] == 1:
+        window.btn_send.clicked.connect(lambda: threading.Thread(target=SendUserPrompt, args=(window,)).start())
+    else:
+        window.btn_send.clicked.connect(lambda: SendUserPrompt(window))
 
 def openSerial(window):
     serial_port = window.serial_port.text()
@@ -13,7 +24,35 @@ def openSerial(window):
     status = f"{serial_port}: {'Opened' if is_open else 'Closed'}"
     window.serial_status.setText(status)
 
-def SendPrompt(window):
+    if config_dict["DesktopPetReceive"] == 1:
+        threading.Thread(target=sendMachinePrompt, args=(window,), daemon=True).start()
+
+def sendMachinePrompt(window):
+    last_r_data = 0
+    while True:
+        # print("Sending machine prompt...")
+        if window.SerialObj.recv_flag:
+            window.SerialObj.recv_flag = False
+            r_data = window.SerialObj.r_data
+            # print(f"Received data: {r_data}")
+            try:
+                current_r_data = float(r_data)
+                # print(current_r_data)
+                if last_r_data > current_r_data * 10:
+                    window.SerialObj.s_data = "1"+"(O_o)!!!!!!!".ljust(31, ' ')+" "*32
+                    window.SerialObj.send_flag = True
+                elif current_r_data > 100 and last_r_data < current_r_data / 10:
+                    window.SerialObj.s_data = "1"+"= w =".ljust(31, ' ')+" "*32
+                    window.SerialObj.send_flag = True
+                else:
+                    pass
+                last_r_data = current_r_data
+            except ValueError as e:
+                print(e)
+                continue
+        time.sleep(0.1)
+
+def SendUserPrompt(window):
     in_text = window.in_text.text()
     llm_answer = window.llm.get_llm_json_answer(f"""
 请结合用户的输入信息，生成终端设备的表现。这个终端设备包含一个微型LED屏幕和一个舵机。
@@ -38,17 +77,24 @@ def SendPrompt(window):
     emotion_words = llm_answer['emotion_words']
     servo_angle_list = llm_answer['servo_angle_list']
 
-    emotion_words = emotion_words[:32]
-    emotion_words = emotion_words.ljust(32, ' ')
+    emotion_words = emotion_words[:31]
+    emotion_words = emotion_words.ljust(31, ' ')
 
     servo_angle_list = servo_angle_list[:32]
     servo_angle_list = servo_angle_list.ljust(32, ' ')
 
-    data_to_send = emotion_words + servo_angle_list
-
+    data_to_send = "1" + emotion_words + servo_angle_list
     command = f"llm_answer: {llm_answer}, data_to_send: {data_to_send}"
-    window.command.setText(command)
+    # window.command.setText(command)
+    window.command_text = command
+    window.command_flag = True
+    print(f"Command: {command}")
 
     # 发送数据
-    window.SerialObj.send_data(data_to_send)  # encode将字符串转换为字节
+    if config_dict["DesktopPetReceive"] == 1:
+        window.SerialObj.s_data = data_to_send
+        window.SerialObj.send_flag = True
+    else:
+        window.SerialObj.send_data(data_to_send)  # encode将字符串转换为字节
+
     print(f"Sent data: {data_to_send}")

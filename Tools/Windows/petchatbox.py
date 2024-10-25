@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import *
 from .Method.petchatbox import initMethods
 from .UI.petchatbox import initUI
 from .Var.petchatbox import initVar
+from .Timer.petchatbox import initTimer # 初始化定时器
 
 config_dict = yaml.safe_load(
     open('Source/config.yaml')
@@ -29,7 +30,13 @@ class PetChatBox(QWidget):
         initVar(self)
         initUI(self)
         initMethods(self)
+        initTimer(self)
 
     def closeEvent(self, event):
         self.SerialObj.close_serial()
         self.setVisible(False)
+
+    def updateUI(self):
+        if self.command_flag == True:
+            self.command.setText(self.command_text)
+            self.command_flag = False

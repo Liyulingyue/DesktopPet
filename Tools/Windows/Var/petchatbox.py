@@ -6,7 +6,9 @@ config_dict = yaml.safe_load(
 )
 
 def initVar(window):
-    window.SerialObj = SerialClass()
+    window.SerialObj = SerialClass(receive_loop_thread=config_dict['DesktopPetReceive'])
+    window.command_flag = False
+    window.command_text = ""
 
     # 若window存在属性llm，则直接使用window.llm作为LLM，否则根据配置文件中的LLM类型创建相应的LLM对象
     if hasattr(window, 'llm'):
