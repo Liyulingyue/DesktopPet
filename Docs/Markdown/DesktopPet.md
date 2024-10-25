@@ -8,6 +8,10 @@
 
 ![DesktopPet_demo2.png](../Images/DesktopPet_demo2.jpg)
 
+不加载雷达时，仅能通过电脑端交互，加载雷达后，可以基于你的手指动作进行交互~示例如下：
+
+![DesktopPet_demo.gif](../Images/DesktopPet_demo.gif)
+![DesktopPet_demo.gif2](../Images/DesktopPet_demo2.gif)
 
 ## 快速开始
 本项目没办法非常好的快速开始，因为你必须有一套能够配合的硬件，本章节会描述整个流程中最基本的部分。 但请不要担心，搭建桌面宠物并跑起来的过程，就像是搭积木一样，不需要你有什么经验。（如果你希望后续改造和扩展这个桌宠，我们在其他章节提供了简单的代码说明）
