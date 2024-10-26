@@ -145,3 +145,10 @@
 5. 接收到指令后，根据指令更新oled显示屏内容，并执行舵机动作
 6. 将舵机转回默认角度
 7. 循环3-6
+
+- 大差不差的流程图
+![DesktopPet_workflow.png](../Images/DesktopPet_workflow.png)
+
+## 开发者的展示环节
+有的开发者确实有大病，不管什么都要找个盒子装起来=w=
+![DesktopPet_Box.jpg](../Images/DesktopPet_Box.jpg)
